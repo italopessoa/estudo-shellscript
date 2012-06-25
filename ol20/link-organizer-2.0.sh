@@ -5,6 +5,7 @@
 # Italo Pessoa - italoneypessoa@gmail.com
 
 # exibir videos adicionados na lista
+
 _showVideos(){
 
 # verificar se o arquivo existe e se contem algum video
@@ -42,16 +43,25 @@ linkorganizer_showMenu(){
 	source get-data.sh
 	source checkVideos.sh
 
+	# items do menu pricipal
+	menuItems=(
+		"Adicionar Adicionar\\ novo\\(s\\)\\ vídeo\\(s\\)"
+		"Vídeos Vídeos\\ Disponíveis"
+		"Gerar Gerar\\ script\\ para\\ download"
+		"Selecionar Selecionar\\ vídeos\\ para\\ download"
+		"Lista Vídeos\\ selecionados\\ para\\ download"
+		)
+
+	# remover ultimo item do menu
+	# unset menus[4] 
+
+
 	# armazenar item escolhido
-	res=$( dialog --stdout \
-		--title 'Perfil' \
-		--backtitle "$BACK_TITLE" \
-		--menu 'Escolha o perfil da instalação:'  \
-		0 0 0 \
-		Adicionar 'Adicionar novo(s) vídeo(s)' \
-		Vídeos 'Vídeos Disponíveis' \
-		Gerar 'Gerar script para download' \
-		Selecionar 'Selecionar vídeos para download' )
+	res=$( eval \ dialog --stdout \
+           --title \"Vídeos cadastrados\" \
+           --backtitle \"$BACK_TITLE\" \
+           --menu \"Selecione o vídeos para download\"  \
+           0 0 0 ${menuItems[@]} )
 
 	case "$res" in
 		"Adicionar" )
