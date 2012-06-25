@@ -32,7 +32,7 @@ fi
 _createGeralLinksFile(){
 	# importar script original de criação do script para
 	# organizcao dos links
-	source ol-1.1.0.sh	
+	source ol-1.1.0.sh
 	ol_createLinksFile
 }
 
@@ -40,7 +40,8 @@ _createGeralLinksFile(){
 linkorganizer_showMenu(){
 	# importar script para obetnção das informacoes dos videos
 	source get-data.sh
-	
+	source checkVideos.sh
+
 	# armazenar item escolhido
 	res=$( dialog --stdout \
 		--title 'Perfil' \
@@ -67,6 +68,7 @@ linkorganizer_showMenu(){
 			;;
 		"Selecionar" )
 			# selecionar videos para download
+			checkVideos_main
 			;;
 	esac
 }
