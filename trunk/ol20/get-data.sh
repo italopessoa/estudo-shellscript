@@ -1,11 +1,25 @@
 #!/bin/bash
 # get-data
 # script para capturar os dados dos videos
-# Italo Pessoa - italoneypessoa@gmail.com
+# "Italo Pessoa" <italoneypessoa@gmail.com>
+
+# remover todos os arquivos
+getData_clearData(){
+	for fileVar in $NAMES_FILE $LINKS_FILE $VIDEOS_DOWNLOADED_LIST_FILE $LIST_VIDEOS_FILE; do
+		if [ -e "$fileVar" ]; then
+			rm "$fileVar"
+		fi
+
+		# remover arquivos de copia
+		if [ -e "$fileVar~" ]; then
+			rm "$fileVar~"
+		fi
+	done
+}
 
 # criar arquivos necessarios para armazenar e gerenciar videos
 _createFiles(){
-	for fileVar in $NAMES_FILE $LINKS_FILE $VIDEOS_DOWNLOADED_LIST_FILE $LIST_VIDEOS_FILES; do
+	for fileVar in $NAMES_FILE $LINKS_FILE $VIDEOS_DOWNLOADED_LIST_FILE $LIST_VIDEOS_FILE; do
 		if [ ! -e "$fileVar" ]; then
 			touch "$fileVar"
 		fi
@@ -18,7 +32,7 @@ _sendNameForFile(){
 	number=$(( $number +1 ))
 	echo "$number - @$number $@" >> $NAMES_FILE
 	echo "'$@'" " '' " "off" >> $VIDEOS_DOWNLOADED_LIST_FILE
-	echo $@ >> $LIST_VIDEOS_FILES
+	echo $@ >> $LIST_VIDEOS_FILE
 }
 
 # enviar link do video digitado para arquivo de links
@@ -34,29 +48,11 @@ _removeVideoOfFile(){
 	linha=$(wc -l titulos | cut -d' ' -f1)
 	sed -i "$linha"d $NAMES_FILE
 	sed -i "$linha"d $VIDEOS_DOWNLOADED_LIST_FILE
-	sed -i "$linha"d $LIST_VIDEOS_FILES
+	sed -i "$linha"d $LIST_VIDEOS_FILE
 	sed -i "$linha"d $LINKS_FILE
 }
 
-# exibir informacao
-_showInfo(){
-	dialog \
-		--title 'Atenção' \
-		--backtitle "$BACK_TITLE" \
-		--sleep "3" \
-		--infobox "\n$@"  \
-		0 0
-}
-
-# exibir mensagem de erro
-_showError(){
-	dialog \
-		--title 'Error' \
-		--msgbox 'Ocorreu um erro inesperado!'  \
-		0 0
-}
-
-# mensagemd e sucesso ao adicionar um novo video
+# mensagem de sucesso ao adicionar um novo video
 _sucess(){
 	dialog                                 \
 		--title "Vídeo adicionado a lista de downloads - [Esc] para parar."\
@@ -67,13 +63,19 @@ _sucess(){
 	if [ "$?" -eq "1" ]; then
 		# remover video do arquivo de links e nomes
 		_removeVideoOfFile
+	else
+		# adicionar titulo ao arquivo nomes.video
+		_sendNameForFile $TITULO
+		# adicionar url ao arquivo links.video
+		_sendLinkForFile $LINK
 	fi
 }
 
 # recuperar nome do video
 _getTitulo(){
-	titulo=""
-	titulo=$( dialog  --stdout \
+	# armazenar titulo do video
+	TITULO=""
+	TITULO=$( dialog  --stdout \
 		--title 'Dados do vídeo' \
 		--backtitle "$BACK_TITLE" \
 		--inputbox 'Título do vídeo:' \
@@ -83,61 +85,70 @@ _getTitulo(){
 
 	case "$continuar" in
 		0) 
-			if [ -z "$titulo" ]; then
+			if [ -z "$TITULO" ]; then
 				# exibir mensagem
-				_showInfo "Insira o título do vídeo!"
+				message_showInfo "Insira o título do vídeo!"
 			else
 				# enviar nome do video para arquivo de nomes
-				_sendNameForFile $titulo
+				#_sendNameForFile $titulo
 				# recuperar link do video
 				_getLink
 			fi 
 		;;
-		1) echo sair ;;
+		1)	# reexibir menu principal
+			linkorganizer_showMenu ;;
 		2) echo  HELP ;;
 		255) echo sairE ;;
-		*) showError;;
+		*) message_showError;;
 	esac
 }
 
 
 # recuperar link do video
 _getLink(){
-	link=""
-	link=$( dialog  --stdout \
-		--title 'Dados do vídeo'     \
+	# armazenar url do video
+	LINK=""
+	LINK=$( dialog  --stdout \
+		--title 'Dados do vídeo' \
 		--backtitle "$BACK_TITLE" \
 		--inputbox 'Link do youtube:'  \
-		0 100 )
+		0 100 
+	)
 
 	continuar=$?
 
 	case "$continuar" in
 		0) 
-			if [ -z "$link" ]; then
+			if [ -z "$LINK" ]; then
 				# exibir mensagem
-				_showInfo "Insira o link do vídeo!"
+				message_showInfo "Insira o link do vídeo!"
 			else
 				# enviar link para arquivo de links
-				_sendLinkForFile $link
+				#_sendLinkForFile $link
 				# exibir mensagem de sucesso no cadastro do video
 				_sucess "$titulo"
 			fi
 		;;
-		1) echo sair ;;
+		1)	# reexibir menu principal
+			linkorganizer_showMenu ;;
 		2) echo  HELP ;;
 		255) echo sairE ;;
-		*) showError;;
+		*) message_showError;;
 	esac
 }
 
 # funcao principal
 getData_main(){
+	# importar script com menu principal
 	#source link-organizer-2.0.sh
+
 	# importar funcao do script para limpar url do youtube
-	source youtubeRegex.sh
-	# criar arquivos necessarios para armazenar e gerenciar videos
-	_createFiles
+	#source youtubeRegex.sh
+
+	if [ ! -e "$NAMES_FILE" ]; then
+		# criar arquivos necessarios para armazenar e gerenciar videos
+		_createFiles
+	fi	
 
 	continuar=0
 
