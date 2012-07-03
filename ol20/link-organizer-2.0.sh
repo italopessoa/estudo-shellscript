@@ -2,10 +2,11 @@
 # link-organizer-2.0
 # interface aprimorada para utilização do script
 # ol-1.1.0, para organizacao dos videos para download
-# Italo Pessoa - italoneypessoa@gmail.com
+# "Italo Pessoa" <italoneypessoa@gmail.com>
+
+#trap '' SIGHUP SIGINT SIGQUIT SIGTERM SIGSTOP 255
 
 # exibir videos adicionados na lista
-
 _showVideos(){
 
 # verificar se o arquivo existe e se contem algum video
@@ -27,6 +28,9 @@ else
 
 fi
 
+# reexibir menu principal
+linkorganizer_showMenu
+
 }
 
 # criar script para download dos videos
@@ -39,9 +43,9 @@ _createGeralLinksFile(){
 
 #exibir menu principal
 linkorganizer_showMenu(){
-	# importar script para obetnção das informacoes dos videos
-	source get-data.sh
-	source checkVideos.sh
+	# importar script para obtenção das informacoes dos videos
+	#source get-data.sh
+	#source checkVideos.sh
 
 	# items do menu pricipal
 	menuItems=(
@@ -49,8 +53,27 @@ linkorganizer_showMenu(){
 		"Vídeos Vídeos\\ Disponíveis"
 		"Gerar Gerar\\ script\\ para\\ download"
 		"Selecionar Selecionar\\ vídeos\\ para\\ download"
-		"Lista Vídeos\\ selecionados\\ para\\ download"
-		)
+		"Limpar Remover\\ todos\\ os\\ dados\\ CUIDADO"
+		"Listar Vídeos\\ selecionados\\ para\\ download"
+	)
+
+
+	if [ ! -e "$NAMES_FILE" ]; then
+		# remover todos os itens de menu que necessitam de dados
+		unset menuItems[1]
+		unset menuItems[2]
+		unset menuItems[3]
+		unset menuItems[4]
+		unset menuItems[5]
+
+
+		# remover item Limpar, caso não exista pelo menos um dos arquivo de dados
+		# verificado apenas um arquivo pois todos são criados juntos
+	#	 unset menuItems[4]
+	else if [ ! -s "$DOWNLOADED_FILE" ]; then
+		unset menuItems[3]
+		fi
+	fi
 
 	# remover ultimo item do menu
 	# unset menus[4] 
@@ -79,6 +102,10 @@ linkorganizer_showMenu(){
 		"Selecionar" )
 			# selecionar videos para download
 			checkVideos_main
+			;;
+		"Limpar" )
+			# remover todos os arquivos
+			getData_clearData
 			;;
 	esac
 }
