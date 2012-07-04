@@ -37,7 +37,7 @@ ol_createLinksFile(){
     #remover '/' antes de http
     sed 's/\\ http/ http/' teste2 > teste
 
-    #substituir valor aleatório controladp pelo comando
+    #substituir valor aleatório controlado pelo comando
     sed 's/%r%/youtube-dl -o /' teste2 > result
 
     #escrever script para download
