@@ -20,7 +20,7 @@ export AVAILABLE_VIDEO="available"
 export SELECTED_VIDEOS="selected_videos"
 export DOWNLOAD_STATUS_LOG="download_status.log"
 
-trap '' SIGHUP SIGINT SIGQUIT SIGTERM SIGSTOP 255
+trap '' SIGHUP SIGINT SIGQUIT SIGTERM SIGSTOP
 
 # funcoes utilziadas em diversos scripts
 # centralizada a importação

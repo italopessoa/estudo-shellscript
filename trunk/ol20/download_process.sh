@@ -7,6 +7,18 @@
 # Versao 1 apenas a porcentagem do download
 #	Para a versão 2 pretendo exibir o nome do video sendo baixado
 
+# funcao para remover espacos que atrapalham a regex
+# para recuperar o percentual de download
+_removerSpaces(){
+	# remover conjuntos de espaços, trocando por TABs do maior para o menor
+	# pois se remover do menor para o menor os maiores contem os menores
+	# e isso pode dar problema
+	text=$(echo $1 | unexpand -t4 | unexpand -t3 | unexpand -t2 | expand -t1)
+	# depois transformo todos em em apenas um espaço
+	text=$(echo $text | expand -t1 )
+	echo $text
+}
+
 # funcao para verificar se download ainda esta ocorrendo
 _running(){
 	# $1 é o PID do processo
@@ -21,7 +33,8 @@ _downloadMonitor(){
 	# pegar a linha que contém o nome do arquivo
 	# separar apenas o nome
 	# remover o espaço que fica no início
-	ACTUAL_VIDEO=$(sed -n 6p status | cut -d':' -f2 | sed 's/\ //')
+	STATUS_DOWNLOAD="Download em progresso\n"
+	ACTUAL_VIDEO=$(sed -n 5p status | cut -d':' -f2 | sed 's/\ //')
 	
 	# loop para checar o andamento do download
 	(
@@ -30,11 +43,18 @@ _downloadMonitor(){
 
 			# exibir a ultima linha do arquivo de log do download
 			# pegar o campo que possui a porcentagem do download
-			# remover o caractere %
-			#PORCENTAGEM=$(tail -1 "$DOWNLOAD_STATUS_LOG" | cut -d' ' -f 1 | sed 's/%//')
-			#tail -1 status | cut -d' ' -f3 | sed 's/%//'
-			PORCENTAGEM=$(tail -1 status | cut -d' ' -f3 | sed 's/\.[0-9]\{0,\}%//')
-			#PORCENTAGEM=1.1
+			# recuperar a quantidade de caracteres que foram encontrado com a regex
+			# os caracteres representam cada entrada do youtube-dl no arquivo
+			QTD_DOWNLOAD_ENTRIES=$(tail -1 status | grep -o "\[download\]" | wc -w)
+	
+			# o primeiro campo da regex será vazio,  por isso é preciso incrementar mais um no total
+			(( QTD_DOWNLOAD_ENTRIES++ ))
+
+			# recuperar apenas a ultima linha e o ultimo trecho de código
+			# recuperar a porcentagem e remover o caractere %
+			TEXT=$(tail -1 status | cut -d'[' -f$QTD_DOWNLOAD_ENTRIES)
+			# remover espaços e recuperar a porcentagem sem casas decimais
+			PORCENTAGEM=$(_removerSpaces "$TEXT" | cut -d' ' -f2 | sed 's/\.[0-9]\{0,\}%//')
 
 			# enviar valor de porcentagem para o dialog
 			echo $PORCENTAGEM
@@ -47,7 +67,7 @@ _downloadMonitor(){
 		echo 100
 
 		# redirecioanr valores para o gauge
-	) | dialog --title "Baixando vídeo" --gauge "Download em progresso\n$ACTUAL_VIDEO" 8 40 0
+	) | dialog --title "Baixando vídeo" --gauge "$STATUS_DOWNLOAD$ACTUAL_VIDEO" 8 40 0
 }
 
 # exibir processo de download do video atual
