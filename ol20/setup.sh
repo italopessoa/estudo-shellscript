@@ -9,13 +9,16 @@
 
 #export DIALOGRC=~/Documentos/shell-script/estudo-sehllscript/tema-verde.cfg
 export BACK_TITLE="Organizador de Links - 2.0"
-#files
+
+# files
 export VIDEOS_DOWNLOADED_LIST_FILE="downloaded"
 export LIST_VIDEOS_FILE="videos"
-export DOWNLOADED_FILE="downloaded"
 export VIDEO_SCRIPT_FILE="links.sh"
 export NAMES_FILE="nomes.video"
 export LINKS_FILE="links.video"
+export AVAILABLE_VIDEO="available"
+export SELECTED_VIDEOS="selected_videos"
+export DOWNLOAD_STATUS_LOG="download_status.log"
 
 trap '' SIGHUP SIGINT SIGQUIT SIGTERM SIGSTOP 255
 

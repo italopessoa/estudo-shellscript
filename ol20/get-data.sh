@@ -5,7 +5,7 @@
 
 # remover todos os arquivos
 getData_clearData(){
-	for fileVar in $NAMES_FILE $LINKS_FILE $VIDEOS_DOWNLOADED_LIST_FILE $LIST_VIDEOS_FILE; do
+	for fileVar in $NAMES_FILE $LINKS_FILE $LIST_VIDEOS_FILE $AVAILABLE_VIDEO $SELECTED_VIDEOS; do
 		if [ -e "$fileVar" ]; then
 			rm "$fileVar"
 		fi
@@ -19,7 +19,7 @@ getData_clearData(){
 
 # criar arquivos necessarios para armazenar e gerenciar videos
 _createFiles(){
-	for fileVar in $NAMES_FILE $LINKS_FILE $VIDEOS_DOWNLOADED_LIST_FILE $LIST_VIDEOS_FILE; do
+	for fileVar in $NAMES_FILE $LINKS_FILE $LIST_VIDEOS_FILE $AVAILABLE_VIDEO; do
 		if [ ! -e "$fileVar" ]; then
 			touch "$fileVar"
 		fi
@@ -31,7 +31,7 @@ _sendNameForFile(){
 	number=$(wc -l $NAMES_FILE | cut -d' ' -f1)
 	number=$(( $number +1 ))
 	echo "$number - @$number $@" >> $NAMES_FILE
-	echo "'$@'" " '' " "off" >> $VIDEOS_DOWNLOADED_LIST_FILE
+	echo "'$@'" " '' " "off" >> $AVAILABLE_VIDEO
 	echo $@ >> $LIST_VIDEOS_FILE
 }
 
@@ -47,7 +47,7 @@ _sendLinkForFile(){
 _removeVideoOfFile(){
 	linha=$(wc -l titulos | cut -d' ' -f1)
 	sed -i "$linha"d $NAMES_FILE
-	sed -i "$linha"d $VIDEOS_DOWNLOADED_LIST_FILE
+	sed -i "$linha"d $AVAILABLE_VIDEO
 	sed -i "$linha"d $LIST_VIDEOS_FILE
 	sed -i "$linha"d $LINKS_FILE
 }
@@ -87,7 +87,8 @@ _getTitulo(){
 		0) 
 			if [ -z "$TITULO" ]; then
 				# exibir mensagem
-				message_showInfo "Insira o título do vídeo!"
+				message_showInfo "Dados incompletos" "Insira o título do vídeo!"
+				_getTitulo
 			else
 				# enviar nome do video para arquivo de nomes
 				#_sendNameForFile $titulo
@@ -96,7 +97,7 @@ _getTitulo(){
 			fi 
 		;;
 		1)	# reexibir menu principal
-			linkorganizer_showMenu ;;
+			linkorganizer_showMenu "Erro" "Opção desconhecida";;
 		2) echo  HELP ;;
 		255) echo sairE ;;
 		*) message_showError;;
@@ -111,9 +112,12 @@ _getLink(){
 	LINK=$( dialog  --stdout \
 		--title 'Dados do vídeo' \
 		--backtitle "$BACK_TITLE" \
-		--inputbox 'Link do youtube:'  \
+		--inputbox 'Link do youtube:' \
 		0 100 
 	)
+		#adicioanr acima para melhorar
+		#--and-widget \
+       	#--yesno '\nVocê aceita os Termos da Licença?' 8 30
 
 	continuar=$?
 
@@ -121,7 +125,8 @@ _getLink(){
 		0) 
 			if [ -z "$LINK" ]; then
 				# exibir mensagem
-				message_showInfo "Insira o link do vídeo!"
+				message_showInfo "Dados incompletos" "Insira o link do vídeo!"
+				_getLink
 			else
 				# enviar link para arquivo de links
 				#_sendLinkForFile $link
@@ -133,12 +138,12 @@ _getLink(){
 			linkorganizer_showMenu ;;
 		2) echo  HELP ;;
 		255) echo sairE ;;
-		*) message_showError;;
+		*) message_showError "Erro" "Opção desconhecida";;
 	esac
 }
 
 # funcao principal
-getData_main(){
+getData_Main(){
 	# importar script com menu principal
 	#source link-organizer-2.0.sh
 

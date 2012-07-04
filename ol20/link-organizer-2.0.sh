@@ -9,28 +9,28 @@
 # exibir videos adicionados na lista
 _showVideos(){
 
-# verificar se o arquivo existe e se contem algum video
-if [ -s "videos" ];then
-	dialog \
-		--title 'Lista de vídeos' \
-		--backtitle "$BACK_TITLE" \
-		--textbox "videos" \
-		20 70
+	# verificar se o arquivo existe e se contem algum video
+	if [ -s "$1" ];then
+		dialog \
+			--title "$2" \
+			--backtitle "$BACK_TITLE" \
+			--textbox "$1" \
+			20 70
 
-else
-	# exibir mensagem informando que nao existe nenhum video na lista
-	dialog \
-		--title 'Atenção' \
-		--backtitle "$BACK_TITLE" \
-		--sleep "2" \
-		--infobox "Não existem vídeos na lista."  \
-		3 40
+	else
+		# exibir mensagem informando que nao existe nenhum video na lista
+		message_showInfo "Atenção" "Não existem vídeos na lista."
+	#	dialog \
+	#		--title 'Atenção' \
+	#		--backtitle "$BACK_TITLE" \
+	#		--sleep "2" \
+	#		--infobox "Não existem vídeos na lista."  \
+	#		3 40
 
-fi
+	fi
 
-# reexibir menu principal
-linkorganizer_showMenu
-
+	# reexibir menu principal
+	linkorganizer_showMenu
 }
 
 # criar script para download dos videos
@@ -50,11 +50,11 @@ linkorganizer_showMenu(){
 	# items do menu pricipal
 	menuItems=(
 		"Adicionar Adicionar\\ novo\\(s\\)\\ vídeo\\(s\\)"
-		"Vídeos Vídeos\\ Disponíveis"
+		"Vídeos Vídeos\\ disponíveis"
 		"Gerar Gerar\\ script\\ para\\ download"
 		"Selecionar Selecionar\\ vídeos\\ para\\ download"
-		"Limpar Remover\\ todos\\ os\\ dados\\ CUIDADO"
 		"Listar Vídeos\\ selecionados\\ para\\ download"
+		"Limpar Remover\\ todos\\ os\\ dados\\ CUIDADO"
 	)
 
 
@@ -66,34 +66,33 @@ linkorganizer_showMenu(){
 		unset menuItems[4]
 		unset menuItems[5]
 
-
-		# remover item Limpar, caso não exista pelo menos um dos arquivo de dados
-		# verificado apenas um arquivo pois todos são criados juntos
-	#	 unset menuItems[4]
-	else if [ ! -s "$DOWNLOADED_FILE" ]; then
+	# remover item Limpar, caso não exista pelo menos um dos arquivo de dados
+	# verificado apenas um arquivo pois todos são criados juntos
+	# unset menuItems[4]
+	else if [ ! -s "$AVAILABLE_VIDEO" ]; then
 		unset menuItems[3]
+			else if [ ! -s "$SELECTED_VIDEOS" ]; then
+				unset menuItems[4]
+			fi
 		fi
 	fi
-
-	# remover ultimo item do menu
-	# unset menus[4] 
-
 
 	# armazenar item escolhido
 	res=$( eval \ dialog --stdout \
            --title \"Vídeos cadastrados\" \
            --backtitle \"$BACK_TITLE\" \
            --menu \"Selecione o vídeos para download\"  \
-           0 0 0 ${menuItems[@]} )
+           0 0 0 ${menuItems[@]} 
+		)
 
 	case "$res" in
 		"Adicionar" )
 			# adicionar um novo video
-			getData_main
+			getData_Main
 			;;
 		"Vídeos" )
 			# exibir videos adicioandos a lista
-			_showVideos
+			_showVideos "$LIST_VIDEOS_FILE" "Lista de vídeos"
 			;;
 		"Gerar" )
 			#source ol-1.1.0.sh
@@ -101,11 +100,15 @@ linkorganizer_showMenu(){
 			;;
 		"Selecionar" )
 			# selecionar videos para download
-			checkVideos_main
+			checkVideos_Main
 			;;
 		"Limpar" )
 			# remover todos os arquivos
 			getData_clearData
+			;;
+		"Listar" )
+			# vídeos selecionados para download
+			_showVideos "$SELECTED_VIDEOS" "Vídeos selecionado para download"
 			;;
 	esac
 }
