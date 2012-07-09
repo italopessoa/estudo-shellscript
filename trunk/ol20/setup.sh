@@ -20,7 +20,7 @@ export AVAILABLE_VIDEO="available"
 export SELECTED_VIDEOS="selected_videos"
 export DOWNLOAD_STATUS_LOG="download_status.log"
 
-trap '' SIGHUP SIGINT SIGQUIT SIGTERM SIGSTOP
+#trap '' SIGHUP SIGINT SIGQUIT SIGTERM SIGSTOP
 
 # funcoes utilziadas em diversos scripts
 # centralizada a importação
@@ -29,6 +29,6 @@ source message.sh
 source get-data.sh
 source checkVideos.sh
 source youtubeRegex.sh
-
+source utils.sh
 # exibir menu principal
 linkorganizer_showMenu

@@ -55,6 +55,8 @@ linkorganizer_showMenu(){
 		"Selecionar Selecionar\\ vídeos\\ para\\ download"
 		"Listar Vídeos\\ selecionados\\ para\\ download"
 		"Limpar Remover\\ todos\\ os\\ dados\\ CUIDADO"
+		"Download Executar\\ download\\ de\\ todos\\ os\\ vídeos"
+		"Sair Encerrar\\ programa"
 	)
 
 
@@ -70,7 +72,8 @@ linkorganizer_showMenu(){
 	# verificado apenas um arquivo pois todos são criados juntos
 	# unset menuItems[4]
 	else if [ ! -s "$AVAILABLE_VIDEO" ]; then
-		unset menuItems[3]
+			unset menuItems[3]
+			unset menuItems[6]
 			else if [ ! -s "$SELECTED_VIDEOS" ]; then
 				unset menuItems[4]
 			fi
@@ -109,6 +112,17 @@ linkorganizer_showMenu(){
 		"Listar" )
 			# vídeos selecionados para download
 			_showVideos "$SELECTED_VIDEOS" "Vídeos selecionado para download"
+			;;
+		"Download" )
+			# executar script para download dos videos
+			./links.sh
+			;;
+		"Sair" )
+			# encerrar programa
+			#export STOP_PROCESSES="1"
+			p=$(top -b -n1 | grep bash | cut -d' ' -f1)
+			kill -9 $$
+			exit 0;
 			;;
 	esac
 }

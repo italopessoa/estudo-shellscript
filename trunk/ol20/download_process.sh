@@ -7,9 +7,24 @@
 # Versao 1 apenas a porcentagem do download
 #	Para a versão 2 pretendo exibir o nome do video sendo baixado
 
+trap 'teste' SIGINT
+source utils.sh
+teste(){
+	dialog --stdout \
+                --title "asdasdadasd" \
+                --backtitle "$BACK_TITLE" \
+                --yesno "Deseja realmente cancelar?"  \
+                0 0
+	if [ "$?" == "0" ]; then
+		kill -9 $DOWNLOAD 2> nada
+		#exit 10
+	else
+		_downloadMonitor $DOWNLOAD
+	fi
+}
 # funcao para remover espacos que atrapalham a regex
 # para recuperar o percentual de download
-_removerSpaces(){
+_removeSpaces(){
 	# remover conjuntos de espaços, trocando por TABs do maior para o menor
 	# pois se remover do menor para o menor os maiores contem os menores
 	# e isso pode dar problema
@@ -34,12 +49,17 @@ _downloadMonitor(){
 	# separar apenas o nome
 	# remover o espaço que fica no início
 	STATUS_DOWNLOAD="Download em progresso\n"
-	ACTUAL_VIDEO=$(sed -n 5p status | cut -d':' -f2 | sed 's/\ //')
+	#ACTUAL_VIDEO=$(sed -n 5p status | cut -d':' -f2 | sed 's/\ //')
+	ACTUAL_VIDEO=$(grep "Destination" status | cut -d':' -f2 | sed 's/\ //')
+	utils_showInfoMessage "Aguarde" "Carregando informações!"
+	while [ -z "$ACTUAL_VIDEO" ]; do
+		ACTUAL_VIDEO=$(grep "Destination" status | cut -d':' -f2 | sed 's/\ //')
+	done
 	
 	# loop para checar o andamento do download
 	(
 		# enquanto o download estiver sendo executado a verificação será feita
-		while _running $DOWNLOAD; do
+		while utils_running $DOWNLOAD 2> nada; do
 
 			# exibir a ultima linha do arquivo de log do download
 			# pegar o campo que possui a porcentagem do download
@@ -54,7 +74,7 @@ _downloadMonitor(){
 			# recuperar a porcentagem e remover o caractere %
 			TEXT=$(tail -1 status | cut -d'[' -f$QTD_DOWNLOAD_ENTRIES)
 			# remover espaços e recuperar a porcentagem sem casas decimais
-			PORCENTAGEM=$(_removerSpaces "$TEXT" | cut -d' ' -f2 | sed 's/\.[0-9]\{0,\}%//')
+			PORCENTAGEM=$(_removeSpaces "$TEXT" | cut -d' ' -f2 | sed 's/\.[0-9]\{0,\}%//')
 
 			# enviar valor de porcentagem para o dialog
 			echo $PORCENTAGEM
