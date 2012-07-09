@@ -39,7 +39,7 @@ _sendNameForFile(){
 _sendLinkForFile(){
 	number=$(wc -l $LINKS_FILE | cut -d' ' -f1)
 	number=$(( $number +1 ))
-	youtubeLink=$(youtubeRegex $1)
+	youtubeLink=$(utils_youtubeRegex $1)
 	echo "$number $youtubeLink" >> $LINKS_FILE
 }
 
@@ -87,7 +87,7 @@ _getTitulo(){
 		0) 
 			if [ -z "$TITULO" ]; then
 				# exibir mensagem
-				message_showInfo "Dados incompletos" "Insira o título do vídeo!"
+				utils_showInfoMessage "Dados incompletos" "Insira o título do vídeo!"
 				_getTitulo
 			else
 				# enviar nome do video para arquivo de nomes
@@ -100,7 +100,7 @@ _getTitulo(){
 			linkorganizer_showMenu "Erro" "Opção desconhecida";;
 		2) echo  HELP ;;
 		255) echo sairE ;;
-		*) message_showError;;
+		*) utils_showErrorMessage;;
 	esac
 }
 
@@ -125,7 +125,7 @@ _getLink(){
 		0) 
 			if [ -z "$LINK" ]; then
 				# exibir mensagem
-				message_showInfo "Dados incompletos" "Insira o link do vídeo!"
+				utils_showInfoMessage "Dados incompletos" "Insira o link do vídeo!"
 				_getLink
 			else
 				# enviar link para arquivo de links
@@ -138,7 +138,7 @@ _getLink(){
 			linkorganizer_showMenu ;;
 		2) echo  HELP ;;
 		255) echo sairE ;;
-		*) message_showError "Erro" "Opção desconhecida";;
+		*) utils_showErrorMessage "Erro" "Opção desconhecida";;
 	esac
 }
 

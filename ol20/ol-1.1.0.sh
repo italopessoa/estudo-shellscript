@@ -25,8 +25,17 @@ ol_createLinksFile(){
     #unir arquivos
     join -j1 "$NAMES_FILE" "$LINKS_FILE" > teste 
 
+    # adaptação para inserir chamada de funcao wait
+    # no script de download
+    while read linha; do
+            if [ "$linha" != "clear" ]; then
+                    echo "$linha" >> file
+                    echo "_showProgress" >> file
+            fi
+    done < teste
+
     #remover numeracao
-    sed 's/.\{0,\}@/%r%/' teste > tmp
+    sed 's/.\{0,\}@/%r%/' file > tmp
 
     #mudar espaços por valor aleatório expecífico
     sed 's/ /@123/g' tmp > teste
@@ -46,6 +55,10 @@ ol_createLinksFile(){
     echo '#script para fazer download dos vídeos' >> "$VIDEO_SCRIPT_FILE"
     echo '' >> "$VIDEO_SCRIPT_FILE"
 
+    echo "_showProgress(){" >> "$VIDEO_SCRIPT_FILE"
+    echo '  downloadProcess_Show $!' >> "$VIDEO_SCRIPT_FILE"
+    echo "}" >> "$VIDEO_SCRIPT_FILE"
+
     #remover ultima barra e envia para result,tratar parenteses
     sed 's/..http/ http/ ; s/(/\\(/g ; s/)/\\)/g' result >> "$VIDEO_SCRIPT_FILE"
 
@@ -55,7 +68,7 @@ ol_createLinksFile(){
 
     echo "echo \"------------------FIM---------------------------------\"" >> "$VIDEO_SCRIPT_FILE"
     echo "#GERADO POR ITALO NEY - italoneypessoa@gmail.com" >> "$VIDEO_SCRIPT_FILE"
-    rm teste tmp teste2 result
+    rm teste tmp teste2 result file
     chmod +x "$VIDEO_SCRIPT_FILE"
 
     if [ ! -z $ALERT ]; then
