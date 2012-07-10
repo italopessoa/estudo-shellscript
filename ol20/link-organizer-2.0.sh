@@ -73,11 +73,15 @@ linkorganizer_showMenu(){
 	# unset menuItems[4]
 	else if [ ! -s "$AVAILABLE_VIDEO" ]; then
 			unset menuItems[3]
-			unset menuItems[6]
 			else if [ ! -s "$SELECTED_VIDEOS" ]; then
 				unset menuItems[4]
 			fi
 		fi
+	fi
+
+	# remover item Download caso nao exista o scipt
+	if [ ! -s "links.sh" ];then
+		unset menuItems[6]
 	fi
 
 	# armazenar item escolhido
@@ -118,6 +122,13 @@ linkorganizer_showMenu(){
 			./links.sh
 			;;
 		"Sair" )
+
+			vet=($PROCESS_KILL)
+			#foreach
+			for key in ${!vet[*]}; do
+				echo ${vet[$key]};
+			done
+
 			# encerrar programa
 			#export STOP_PROCESSES="1"
 			p=$(top -b -n1 | grep bash | cut -d' ' -f1)

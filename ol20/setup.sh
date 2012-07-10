@@ -19,7 +19,7 @@ export LINKS_FILE="links.video"
 export AVAILABLE_VIDEO="available"
 export SELECTED_VIDEOS="selected_videos"
 export DOWNLOAD_STATUS_LOG="download_status.log"
-
+export PROCESS_KILL=""
 #trap '' SIGHUP SIGINT SIGQUIT SIGTERM SIGSTOP
 
 # funcoes utilziadas em diversos scripts
@@ -30,5 +30,6 @@ source get-data.sh
 source checkVideos.sh
 source youtubeRegex.sh
 source utils.sh
+source download_process.sh
 # exibir menu principal
 linkorganizer_showMenu
