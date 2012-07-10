@@ -14,6 +14,22 @@
 
 ALERT=$(which 'notify-send'); # aplicativo para alerta
 
+# corrigir arquivo para que os downloads sejam executados em background e possam ser
+# monitorados pelo gauge
+_insertBackgroundProcesses(){
+    while read linha; do
+        video=$(echo "$linha" | sed 's/[\\\/\\]//g' |  grep "www.youtube.com" )
+        cdVideo=$(echo $video | grep -o "\=.*" | sed -e 's/=//')
+        if [ ! -z "$video" ]; then
+            echo $cdVideo
+            #echo "$linha &"
+            cdVideoBck="$cdVideo \\&"
+            sed -i "s|$cdVideo|$cdVideo > status \\&|g"  "links.sh"
+        fi
+        
+    done < links.sh
+}
+
 ol_createLinksFile(){
         
     #ALERT=$(which 'notify-send'); # aplicativo para alerta
@@ -50,24 +66,33 @@ ol_createLinksFile(){
     sed 's/%r%/youtube-dl -o /' teste2 > result
 
     #escrever script para download
-    echo '#!/bin/sh' > "$VIDEO_SCRIPT_FILE"
+    echo '#!/bin/bash' > "$VIDEO_SCRIPT_FILE"
     echo '' >> "$VIDEO_SCRIPT_FILE"
     echo '#script para fazer download dos vídeos' >> "$VIDEO_SCRIPT_FILE"
     echo '' >> "$VIDEO_SCRIPT_FILE"
 
+    echo "source download_process.sh" >> "$VIDEO_SCRIPT_FILE"
     echo "_showProgress(){" >> "$VIDEO_SCRIPT_FILE"
-    echo '  downloadProcess_Show $!' >> "$VIDEO_SCRIPT_FILE"
+    echo "  # monitorar status download" >> "$VIDEO_SCRIPT_FILE"
+    echo "  downloadProcess_Show \$!" >> "$VIDEO_SCRIPT_FILE"
+    echo "  # vericiar se o download foi conluido sem interrupcao" >> "$VIDEO_SCRIPT_FILE"
+    echo "  if [ \"\$?\" != \"0\" ];then" >> "$VIDEO_SCRIPT_FILE"
+    echo "      ./setup.sh" >> "$VIDEO_SCRIPT_FILE"
+    echo "      echo \$\$" >> "$VIDEO_SCRIPT_FILE"
+    echo "      killall \$\$" >> "$VIDEO_SCRIPT_FILE"
+    echo "  fi" >> "$VIDEO_SCRIPT_FILE"
     echo "}" >> "$VIDEO_SCRIPT_FILE"
+    echo "" >>"$VIDEO_SCRIPT_FILE"
 
     #remover ultima barra e envia para result,tratar parenteses
     sed 's/..http/ http/ ; s/(/\\(/g ; s/)/\\)/g' result >> "$VIDEO_SCRIPT_FILE"
-
+    _insertBackgroundProcesses
     #sed 's/\\ http/ http/' tmp > result # remover ultima barra e envia para result
-    echo "clear" >> "$VIDEO_SCRIPT_FILE"
+    #echo "clear" >> "$VIDEO_SCRIPT_FILE"
     #cat links.sh | sed 's/(/\\(/g ; s/)/\\)/g' > tmp
 
-    echo "echo \"------------------FIM---------------------------------\"" >> "$VIDEO_SCRIPT_FILE"
-    echo "#GERADO POR ITALO NEY - italoneypessoa@gmail.com" >> "$VIDEO_SCRIPT_FILE"
+    #echo "echo \"------------------FIM---------------------------------\"" >> "$VIDEO_SCRIPT_FILE"
+    #echo "#GERADO POR ITALO NEY - italoneypessoa@gmail.com" >> "$VIDEO_SCRIPT_FILE"
     rm teste tmp teste2 result file
     chmod +x "$VIDEO_SCRIPT_FILE"
 
