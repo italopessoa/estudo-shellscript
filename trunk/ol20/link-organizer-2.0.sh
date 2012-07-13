@@ -37,7 +37,7 @@ _showVideos(){
 _createGeralLinksFile(){
 	# importar script original de criação do script para
 	# organizcao dos links
-	source ol-1.1.0.sh
+	source "$GENERATE_SCRIPT_DOWNLOAD_SCRIPT"
 	ol_createLinksFile
 }
 
@@ -80,7 +80,7 @@ linkorganizer_showMenu(){
 	fi
 
 	# remover item Download caso nao exista o scipt
-	if [ ! -s "links.sh" ];then
+	if [ ! -s "$VIDEO_SCRIPT" ];then
 		unset menuItems[6]
 	fi
 
@@ -119,20 +119,22 @@ linkorganizer_showMenu(){
 			;;
 		"Download" )
 			# executar script para download dos videos
-			./links.sh
+			./"$VIDEO_SCRIPT" 2> /dev/null
 			;;
 		"Sair" )
 
 			vet=($PROCESS_KILL)
 			#foreach
-			for key in ${!vet[*]}; do
-				echo ${vet[$key]};
-			done
+			#for key in ${!vet[*]}; do
+			#	echo ${vet[$key]};
+			#done
 
 			# encerrar programa
 			#export STOP_PROCESSES="1"
-			p=$(top -b -n1 | grep bash | cut -d' ' -f1)
-			kill -9 $$
+			#p=$(top -b -n1 | grep bash | cut -d' ' -f1)
+			#kill -9 $$
+			clear
+			killall "$VIDEO_SCRIPT"
 			exit 0;
 			;;
 	esac

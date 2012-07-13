@@ -71,7 +71,7 @@ ol_createLinksFile(){
     echo '#script para fazer download dos vídeos' >> "$VIDEO_SCRIPT_FILE"
     echo '' >> "$VIDEO_SCRIPT_FILE"
 
-    echo "source download_process.sh" >> "$VIDEO_SCRIPT_FILE"
+    echo "source $DOWNLOAD_PROCESS_SCRIPT" >> "$VIDEO_SCRIPT_FILE"
     echo "_showProgress(){" >> "$VIDEO_SCRIPT_FILE"
     echo "  # monitorar status download" >> "$VIDEO_SCRIPT_FILE"
     echo "  downloadProcess_Show \$!" >> "$VIDEO_SCRIPT_FILE"
@@ -98,7 +98,7 @@ ol_createLinksFile(){
 
     if [ ! -z $ALERT ]; then
         #$ALERT -u critical "Sucesso!" "Arquivo '$VIDEO_SCRIPT_FILE' criado.";
-        message_showInfo "Sucesso!" "\nArquivo '$VIDEO_SCRIPT_FILE' criado.";
+        utils_showInfoMessage "Sucesso!" "\nArquivo '$VIDEO_SCRIPT_FILE' criado.";
         exit 0;
     else
         echo "Sucesso!\nArquivo '$VIDEO_SCRIPT_FILE' criado.";
@@ -111,7 +111,7 @@ if [ ! -e "$NAMES_FILE" ]; then
 
     if [ ! -z $ALERT ]; then
         #$ALERT -u critical "Erro na execução!" "Arquivo '$NAMES_FILE' não existe!" ;
-        message_showError "Erro na execução!" "Arquivo '$NAMES_FILE' não existe!";
+        utils_showInfoMessage "Erro na execução!" "Arquivo '$NAMES_FILE' não existe!";
         exit 1;
     else
         echo "Erro na execução!\nArquivo $NAMES_FILE não existe!" ;
@@ -121,7 +121,7 @@ if [ ! -e "$NAMES_FILE" ]; then
     elif [ ! -e "$LINKS_FILE" ]; then 
         if [ ! -z $ALERT ]; then
         #$ALERT -u critical "Erro na execução!" "Arquivo '$LINKS_FILE' não existe!" ;
-        message_showError "Erro na execução!" "Arquivo '$LINKS_FILE' não existe!";
+        utils_showErrorMessage "Erro na execução!" "Arquivo '$LINKS_FILE' não existe!";
         exit 1;
     else
         echo "Erro na execução!\nArquivo $LINKS_FILE não existe!" ;

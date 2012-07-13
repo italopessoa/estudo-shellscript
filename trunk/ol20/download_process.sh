@@ -16,7 +16,7 @@ teste(){
                 --yesno "Deseja realmente cancelar?"  \
                 0 0
 	if [ "$?" == "0" ]; then
-		kill -9 $DOWNLOAD 2> nada
+		kill -9 $DOWNLOAD 2> /dev/null
 		#exit 10
 	else
 		_downloadMonitor $DOWNLOAD
@@ -35,7 +35,7 @@ _removeSpaces(){
 }
 
 # funcao para verificar se download ainda esta ocorrendo
-_running(){
+utils_running(){
 	# $1 é o PID do processo
 	ps $1 | grep $1 >/dev/null;
 }
@@ -50,29 +50,29 @@ _downloadMonitor(){
 	# remover o espaço que fica no início
 	STATUS_DOWNLOAD="Download em progresso\n"
 	#ACTUAL_VIDEO=$(sed -n 5p status | cut -d':' -f2 | sed 's/\ //')
-	ACTUAL_VIDEO=$(grep "Destination" status | cut -d':' -f2 | sed 's/\ //')
+	ACTUAL_VIDEO=$(grep "Destination" "$DOWNLOAD_STATUS_LOG" | cut -d':' -f2 | sed 's/\ //')
 	utils_showInfoMessage "Aguarde" "Carregando informações!"
 	while [ -z "$ACTUAL_VIDEO" ]; do
-		ACTUAL_VIDEO=$(grep "Destination" status | cut -d':' -f2 | sed 's/\ //')
+		ACTUAL_VIDEO=$(grep "Destination" $DOWNLOAD_STATUS_LOG | cut -d':' -f2 | sed 's/\ //')
 	done
 	
 	# loop para checar o andamento do download
 	(
 		# enquanto o download estiver sendo executado a verificação será feita
-		while utils_running $DOWNLOAD 2> nada; do
+		while utils_running $DOWNLOAD 2> /dev/null; do
 
 			# exibir a ultima linha do arquivo de log do download
 			# pegar o campo que possui a porcentagem do download
 			# recuperar a quantidade de caracteres que foram encontrado com a regex
 			# os caracteres representam cada entrada do youtube-dl no arquivo
-			QTD_DOWNLOAD_ENTRIES=$(tail -1 status | grep -o "\[download\]" | wc -w)
+			QTD_DOWNLOAD_ENTRIES=$(tail -1 "$DOWNLOAD_STATUS_LOG" | grep -o "\[download\]" | wc -w)
 	
 			# o primeiro campo da regex será vazio,  por isso é preciso incrementar mais um no total
 			(( QTD_DOWNLOAD_ENTRIES++ ))
 
 			# recuperar apenas a ultima linha e o ultimo trecho de código
 			# recuperar a porcentagem e remover o caractere %
-			TEXT=$(tail -1 status | cut -d'[' -f$QTD_DOWNLOAD_ENTRIES)
+			TEXT=$(tail -1 "$DOWNLOAD_STATUS_LOG" | cut -d'[' -f$QTD_DOWNLOAD_ENTRIES)
 			# remover espaços e recuperar a porcentagem sem casas decimais
 			PORCENTAGEM=$(_removeSpaces "$TEXT" | cut -d' ' -f2 | sed 's/\.[0-9]\{0,\}%//')
 
@@ -85,9 +85,10 @@ _downloadMonitor(){
 
 		# aqui o download ja foi concluido, exibir a porcentagem final
 		echo 100
+		rm "$DOWNLOAD_STATUS_LOG"
 
 		# redirecioanr valores para o gauge
-	) | dialog --title "Baixando vídeo" --gauge "$STATUS_DOWNLOAD$ACTUAL_VIDEO" 8 40 0
+	) | dialog --title "Baixando vídeo" --backtitle "$BACK_TITLE" --gauge "$STATUS_DOWNLOAD$ACTUAL_VIDEO" 8 40 0
 }
 
 # exibir processo de download do video atual

@@ -33,20 +33,19 @@ utils_youtubeRegex(){
 # função para corrigir script de donwnload
 # e por os downloads em background, para que se possa verificar o status do processo
 utils_putOnBackground(){
-
-while read linha; do
-	# verificar se linha possui vídeo
-	video=$(echo "$linha" | sed 's/[\\\/\\]//g' |  grep "www.youtube.com" )
-	# recuperar codigo do video
-	cdVideo=$(echo $video | grep -o "\=.*" | sed -e 's/=//')
-	if [ ! -z "$video" ]; then
-		echo $cdVideo
-		#echo "$linha &"
-		cdVideoBck="$cdVideo \\&"
-		# adicionar simbolo de background no processo do video
-		sed -i "s|$cdVideo|$cdVideo \\&|g"  "links.sh"
-	fi	
-done < links.sh
+    while read linha; do
+    	# verificar se linha possui vídeo
+    	video=$(echo "$linha" | sed 's/[\\\/\\]//g' |  grep "www.youtube.com" )
+    	# recuperar codigo do video
+    	cdVideo=$(echo $video | grep -o "\=.*" | sed -e 's/=//')
+    	if [ ! -z "$video" ]; then
+    		echo $cdVideo
+    		#echo "$linha &"
+    		cdVideoBck="$cdVideo \\&"
+    		# adicionar simbolo de background no processo do video
+    		sed -i "s|$cdVideo|$cdVideo \\&|g"  "$LINKS_VIDEO_DOWNLOAD"
+    	fi	
+    done < links.sh
 }
 
 # funcao para verificar se download ainda esta ocorrendo
