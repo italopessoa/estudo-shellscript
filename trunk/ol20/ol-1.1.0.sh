@@ -24,14 +24,19 @@ _insertBackgroundProcesses(){
             echo $cdVideo
             #echo "$linha &"
             cdVideoBck="$cdVideo \\&"
-            sed -i "s|$cdVideo|$cdVideo > status \\&|g"  "links.sh"
+            sed -i "s|$cdVideo|$cdVideo > \"\$DOWNLOAD_STATUS_LOG\" \\&|g"  "$VIDEO_SCRIPT"
         fi
         
-    done < links.sh
+    done < "$VIDEO_SCRIPT"
 }
 
 ol_createLinksFile(){
-        
+    
+    #remover script caso ja exista, para evitar problemas
+    if [ -e "$VIDEO_SCRIPT" ]; then
+        rm "$VIDEO_SCRIPT"
+    fi
+
     #ALERT=$(which 'notify-send'); # aplicativo para alerta
     # remover \ dos nomes
     cat "$NAMES_FILE" | tr '/' '-' > tmpBarra
@@ -66,42 +71,42 @@ ol_createLinksFile(){
     sed 's/%r%/youtube-dl -o /' teste2 > result
 
     #escrever script para download
-    echo '#!/bin/bash' > "$VIDEO_SCRIPT_FILE"
-    echo '' >> "$VIDEO_SCRIPT_FILE"
-    echo '#script para fazer download dos vídeos' >> "$VIDEO_SCRIPT_FILE"
-    echo '' >> "$VIDEO_SCRIPT_FILE"
+    echo '#!/bin/bash' > "$VIDEO_SCRIPT"
+    echo '' >> "$VIDEO_SCRIPT"
+    echo '#script para fazer download dos vídeos' >> "$VIDEO_SCRIPT"
+    echo '' >> "$VIDEO_SCRIPT"
 
-    echo "source $DOWNLOAD_PROCESS_SCRIPT" >> "$VIDEO_SCRIPT_FILE"
-    echo "_showProgress(){" >> "$VIDEO_SCRIPT_FILE"
-    echo "  # monitorar status download" >> "$VIDEO_SCRIPT_FILE"
-    echo "  downloadProcess_Show \$!" >> "$VIDEO_SCRIPT_FILE"
-    echo "  # vericiar se o download foi conluido sem interrupcao" >> "$VIDEO_SCRIPT_FILE"
-    echo "  if [ \"\$?\" != \"0\" ];then" >> "$VIDEO_SCRIPT_FILE"
-    echo "      ./setup.sh" >> "$VIDEO_SCRIPT_FILE"
-    echo "      echo \$\$" >> "$VIDEO_SCRIPT_FILE"
-    echo "      killall \$\$" >> "$VIDEO_SCRIPT_FILE"
-    echo "  fi" >> "$VIDEO_SCRIPT_FILE"
-    echo "}" >> "$VIDEO_SCRIPT_FILE"
-    echo "" >>"$VIDEO_SCRIPT_FILE"
+    echo "source $DOWNLOAD_PROCESS_SCRIPT" >> "$VIDEO_SCRIPT"
+    echo "_showProgress(){" >> "$VIDEO_SCRIPT"
+    echo "  # monitorar status download" >> "$VIDEO_SCRIPT"
+    echo "  downloadProcess_Show \$!" >> "$VIDEO_SCRIPT"
+    echo "  # vericiar se o download foi conluido sem interrupcao" >> "$VIDEO_SCRIPT"
+    echo "  if [ \"\$?\" != \"0\" ];then" >> "$VIDEO_SCRIPT"
+    echo "      ./setup.sh" >> "$VIDEO_SCRIPT"
+    #echo "      echo \$\$" >> "$VIDEO_SCRIPT"
+    echo "      killall \$\$" >> "$VIDEO_SCRIPT"
+    echo "  fi" >> "$VIDEO_SCRIPT"
+    echo "}" >> "$VIDEO_SCRIPT"
+    echo "" >>"$VIDEO_SCRIPT"
 
     #remover ultima barra e envia para result,tratar parenteses
-    sed 's/..http/ http/ ; s/(/\\(/g ; s/)/\\)/g' result >> "$VIDEO_SCRIPT_FILE"
+    sed 's/..http/ http/ ; s/(/\\(/g ; s/)/\\)/g' result >> "$VIDEO_SCRIPT"
     _insertBackgroundProcesses
     #sed 's/\\ http/ http/' tmp > result # remover ultima barra e envia para result
-    #echo "clear" >> "$VIDEO_SCRIPT_FILE"
+    #echo "clear" >> "$VIDEO_SCRIPT"
     #cat links.sh | sed 's/(/\\(/g ; s/)/\\)/g' > tmp
 
-    #echo "echo \"------------------FIM---------------------------------\"" >> "$VIDEO_SCRIPT_FILE"
-    #echo "#GERADO POR ITALO NEY - italoneypessoa@gmail.com" >> "$VIDEO_SCRIPT_FILE"
+    #echo "echo \"------------------FIM---------------------------------\"" >> "$VIDEO_SCRIPT"
+    #echo "#GERADO POR ITALO NEY - italoneypessoa@gmail.com" >> "$VIDEO_SCRIPT"
     rm teste tmp teste2 result file
-    chmod +x "$VIDEO_SCRIPT_FILE"
+    chmod +x "$VIDEO_SCRIPT"
 
     if [ ! -z $ALERT ]; then
-        #$ALERT -u critical "Sucesso!" "Arquivo '$VIDEO_SCRIPT_FILE' criado.";
-        utils_showInfoMessage "Sucesso!" "\nArquivo '$VIDEO_SCRIPT_FILE' criado.";
+        #$ALERT -u critical "Sucesso!" "Arquivo '$VIDEO_SCRIPT' criado.";
+        utils_showInfoMessage "Sucesso!" "\nArquivo '$VIDEO_SCRIPT' criado.";
         exit 0;
     else
-        echo "Sucesso!\nArquivo '$VIDEO_SCRIPT_FILE' criado.";
+        echo "Sucesso!\nArquivo '$VIDEO_SCRIPT' criado.";
         exit 0;
     fi
 }
