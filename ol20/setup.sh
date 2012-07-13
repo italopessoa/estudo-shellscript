@@ -8,28 +8,36 @@
 # "Italo Pessoa" <italoneypessoa@gmail.com>
 
 #export DIALOGRC=~/Documentos/shell-script/estudo-sehllscript/tema-verde.cfg
-export BACK_TITLE="Organizador de Links - 2.0"
+export BACK_TITLE="Organizador de Links - 2.0 BETA"
 
-# files
+# arquivos utilizados pelo script
 export VIDEOS_DOWNLOADED_LIST_FILE="downloaded"
 export LIST_VIDEOS_FILE="videos"
-export VIDEO_SCRIPT_FILE="links.sh"
+export VIDEO_SCRIPT="links.sh"
 export NAMES_FILE="nomes.video"
 export LINKS_FILE="links.video"
 export AVAILABLE_VIDEO="available"
 export SELECTED_VIDEOS="selected_videos"
 export DOWNLOAD_STATUS_LOG="download_status.log"
 export PROCESS_KILL=""
+
+# scripts utilizados
+# centralizados em variaveis para que possam ser utilizados em qualquer  diretorio
+export LINK_ORGANIZER_SCRIPT="link-organizer-2.0.sh"
+export CHECK_VIDEOS_SCRIPT="checkVideos.sh"
+export GET_DATA_SCRIPT="get-data.sh"
+export UTILS_SCRIPT="utils.sh"
+export DOWNLOAD_PROCESS_SCRIPT="download_process.sh"
+export GENERATE_SCRIPT_DOWNLOAD_SCRIPT="ol-1.1.0.sh"
 #trap '' SIGHUP SIGINT SIGQUIT SIGTERM SIGSTOP
 
 # funcoes utilziadas em diversos scripts
 # centralizada a importação
-source link-organizer-2.0.sh
-source message.sh
-source get-data.sh
-source checkVideos.sh
-source youtubeRegex.sh
-source utils.sh
-source download_process.sh
+source "$LINK_ORGANIZER_SCRIPT"
+source "$GET_DATA_SCRIPT"
+source "$CHECK_VIDEOS_SCRIPT"
+source "$UTILS_SCRIPT"
+source "$DOWNLOAD_PROCESS_SCRIPT"
+#source "$GENERAE_SCRIPT_DOWNLOAD_SCRIPT"
 # exibir menu principal
 linkorganizer_showMenu
