@@ -55,8 +55,9 @@ ol_createLinksFile(){
             fi
     done < teste
 
-    #remover numeracao
-    sed 's/.\{0,\}@/%r%/' file > tmp
+    #remover numeracao de linahs e numeração do vídeo
+    #sed 's/.\{0,\}@/%r%/' file > abc
+    sed 's/.\{0,\}@[0-9]\{0,\} /%r%/' file > tmp
 
     #mudar espaços por valor aleatório expecífico
     sed 's/ /@123/g' tmp > teste
@@ -80,7 +81,7 @@ ol_createLinksFile(){
     echo "_showProgress(){" >> "$VIDEO_SCRIPT"
     echo "  # monitorar status download" >> "$VIDEO_SCRIPT"
     echo "  downloadProcess_Show \$!" >> "$VIDEO_SCRIPT"
-    echo "  # vericiar se o download foi conluido sem interrupcao" >> "$VIDEO_SCRIPT"
+    echo "  # vericiar se o download foi conluido com interrupcao" >> "$VIDEO_SCRIPT"
     echo "  if [ \"\$?\" != \"0\" ];then" >> "$VIDEO_SCRIPT"
     echo "      ./setup.sh" >> "$VIDEO_SCRIPT"
     #echo "      echo \$\$" >> "$VIDEO_SCRIPT"
@@ -102,7 +103,7 @@ ol_createLinksFile(){
     chmod +x "$VIDEO_SCRIPT"
 
     if [ ! -z $ALERT ]; then
-        #$ALERT -u critical "Sucesso!" "Arquivo '$VIDEO_SCRIPT' criado.";
+        $ALERT -u critical "Sucesso!" "Arquivo '$VIDEO_SCRIPT' criado.";
         utils_showInfoMessage "Sucesso!" "\nArquivo '$VIDEO_SCRIPT' criado.";
         exit 0;
     else
