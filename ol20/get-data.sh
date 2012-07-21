@@ -79,9 +79,18 @@ _getTitulo(){
 		--title 'Dados do vídeo' \
 		--backtitle "$BACK_TITLE" \
 		--inputbox 'Título do vídeo:' \
-		0 100 )
+		0 100 
+	)
 
 	continuar=$?
+	#_nameAlreadyExists "$TITULO"
+	while _nameAlreadyExists "$TITULO"; do
+		TITULO=$( dialog  --stdout \
+				--title 'Dados do vídeo' \
+				--backtitle "$BACK_TITLE" \
+				--inputbox 'Título do vídeo:' \
+				0 100 )
+	done
 
 	case "$continuar" in
 		0) 
@@ -140,6 +149,21 @@ _getLink(){
 		255) echo sairE ;;
 		*) utils_showErrorMessage "Erro" "Opção desconhecida";;
 	esac
+}
+
+# verificar se o nome do vídeo já é existe
+_nameAlreadyExists(){
+	echo "$@" > par
+	# o arquivo possui alguns caracteres antes do nome
+	# eles devem ser considerados apenas para comparar
+	#grep -x "[0-9]\{0,\}\ -\ @[0-9]\{0,\}\ $@" "$NAMES_FILE" >> namesalread
+	grep -x "[0-9]\{0,\} - @[0-9]\{0,\} $@" "$NAMES_FILE" > namesalread
+	#grep -x "$@" "$NAMES_FILE" >> namesalread
+}
+
+# verificar se o do vídeo já é utilizado
+_videoAlreadyExists(){
+	grep -x "$1" "$LINKS_FILE"
 }
 
 # funcao principal
