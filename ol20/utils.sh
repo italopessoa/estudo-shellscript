@@ -7,21 +7,21 @@
 
 # exibir informacao
 utils_showInfoMessage(){
-        dialog \
-                --title "$1" \
-                --backtitle "$BACK_TITLE" \
-                --sleep "3" \
-                --infobox "$2"  \
-                10 40
+    dialog \
+        --title "$1" \
+        --backtitle "$BACK_TITLE" \
+        --sleep "3" \
+        --infobox "$2"  \
+        10 40
 }
 
 # exibir mensagem de erro
 utils_showErrorMessage(){
-        dialog \
-                --title "$1" \
-                --backtitle "$BACK_TITLE" \
-                --msgbox "$2"  \
-                0 0
+    dialog \
+        --title "$1" \
+        --backtitle "$BACK_TITLE" \
+        --msgbox "$2"  \
+        0 0
 }
 
 # script simples para remover dados desnecessários da

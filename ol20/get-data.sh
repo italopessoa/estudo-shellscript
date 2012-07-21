@@ -83,13 +83,21 @@ _getTitulo(){
 	)
 
 	continuar=$?
-	#_nameAlreadyExists "$TITULO"
+	# enquanto o nome digitado já existir
+	# exibir alerta e pedir o nome novamente
 	while _nameAlreadyExists "$TITULO"; do
+		dialog \
+        --title "Atenção" \
+        --backtitle "$BACK_TITLE" \
+        --msgbox "Esse nome já é utilizado"  \
+        5 35
+
 		TITULO=$( dialog  --stdout \
 				--title 'Dados do vídeo' \
 				--backtitle "$BACK_TITLE" \
 				--inputbox 'Título do vídeo:' \
 				0 100 )
+		continuar=$?
 	done
 
 	case "$continuar" in
@@ -129,6 +137,22 @@ _getLink(){
        	#--yesno '\nVocê aceita os Termos da Licença?' 8 30
 
 	continuar=$?
+	# enquanto o link digitado já existir
+	# exibir alerta e pedir o link novamente
+	while _videoAlreadyExists "$LINK"; do
+		dialog \
+        --title "Atenção" \
+        --backtitle "$BACK_TITLE" \
+        --msgbox "Esse link já é utilizado"  \
+        5 35
+
+		LINK=$( dialog  --stdout \
+				--title 'Dados do vídeo' \
+				--backtitle "$BACK_TITLE" \
+				--inputbox 'Link do youtube:' \
+				0 100 )
+		continuar=$?
+	done
 
 	case "$continuar" in
 		0) 
@@ -154,16 +178,19 @@ _getLink(){
 # verificar se o nome do vídeo já é existe
 _nameAlreadyExists(){
 	echo "$@" > par
+	
 	# o arquivo possui alguns caracteres antes do nome
 	# eles devem ser considerados apenas para comparar
-	#grep -x "[0-9]\{0,\}\ -\ @[0-9]\{0,\}\ $@" "$NAMES_FILE" >> namesalread
-	grep -x "[0-9]\{0,\} - @[0-9]\{0,\} $@" "$NAMES_FILE" > namesalread
-	#grep -x "$@" "$NAMES_FILE" >> namesalread
+	#grep -x "[0-9]\{0,\} - @[0-9]\{0,\} $@" "$NAMES_FILE" > /dev/null
+
+	#solucao mais simples
+	grep -x "$@" "$LIST_VIDEOS_FILE"
 }
 
 # verificar se o do vídeo já é utilizado
 _videoAlreadyExists(){
-	grep -x "$1" "$LINKS_FILE"
+	L=$(utils_youtubeRegex "$@")
+	grep "$L" "$LINKS_FILE"
 }
 
 # funcao principal
