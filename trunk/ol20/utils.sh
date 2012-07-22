@@ -53,3 +53,23 @@ utils_running(){
     # $1 é o PID do processo
     ps $1 | grep $1 >/dev/null;
 }
+
+# verificar se o nome do vídeo já é existe
+utils_nameAlreadyExists(){
+    # $1 valor a ser procurado
+    # $2 arquivo onde deve ser procurado
+    #echo "$@" > par
+    # o arquivo possui alguns caracteres antes do nome
+    # eles devem ser considerados apenas para comparar
+    #grep -x "[0-9]\{0,\} - @[0-9]\{0,\} $1" "$2" > /dev/null
+    #solucao mais simples
+    grep -x "$1" "$2"
+}
+
+# verificar se o do vídeo já é utilizado
+utils_videoAlreadyExists(){
+    # $1 valor a ser procurado
+    # $2 arquivo onde deve ser procurado
+    L=$(utils_youtubeRegex "$1")
+    grep -x ".*$1" "$2"
+}

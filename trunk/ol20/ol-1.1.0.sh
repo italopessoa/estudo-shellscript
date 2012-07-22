@@ -24,27 +24,26 @@ _insertBackgroundProcesses(){
             echo $cdVideo
             #echo "$linha &"
             cdVideoBck="$cdVideo \\&"
-            sed -i "s|$cdVideo|$cdVideo > \"\$DOWNLOAD_STATUS_LOG\" \\&|g"  "$VIDEO_SCRIPT"
+            sed -i "s|$cdVideo|$cdVideo > \"\$DOWNLOAD_STATUS_LOG\" \\&|g"  "$SCRIPTOUT"
         fi
         
-    done < "$VIDEO_SCRIPT"
+    done < "$SCRIPTOUT"
 }
 
-ol_createLinksFile(){
-    
+_createLinksFile(){
     #remover script caso ja exista, para evitar problemas
-    if [ -e "$VIDEO_SCRIPT" ]; then
-        rm "$VIDEO_SCRIPT"
+    if [ -e "$SCRIPTOUT" ]; then
+        rm "$SCRIPTOUT"
     fi
 
     #ALERT=$(which 'notify-send'); # aplicativo para alerta
     # remover \ dos nomes
-    cat "$NAMES_FILE" | tr '/' '-' > tmpBarra
+    cat "$VIDEOS" | tr '/' '-' > tmpBarra
     #passar conteudo de volta para nomes.video
-    mv tmpBarra "$NAMES_FILE"
+    mv tmpBarra "$VIDEOS"
 
     #unir arquivos
-    join -j1 "$NAMES_FILE" "$LINKS_FILE" > teste 
+    join -j1 "$VIDEOS" "$LINKS" > teste 
 
     # adaptação para inserir chamada de funcao wait
     # no script de download
@@ -72,67 +71,73 @@ ol_createLinksFile(){
     sed 's/%r%/youtube-dl -o /' teste2 > result
 
     #escrever script para download
-    echo '#!/bin/bash' > "$VIDEO_SCRIPT"
-    echo '' >> "$VIDEO_SCRIPT"
-    echo '#script para fazer download dos vídeos' >> "$VIDEO_SCRIPT"
-    echo '' >> "$VIDEO_SCRIPT"
+    echo '#!/bin/bash' > "$SCRIPTOUT"
+    echo '' >> "$SCRIPTOUT"
+    echo '#script para fazer download dos vídeos' >> "$SCRIPTOUT"
+    echo '' >> "$SCRIPTOUT"
 
-    echo "source $DOWNLOAD_PROCESS_SCRIPT" >> "$VIDEO_SCRIPT"
-    echo "_showProgress(){" >> "$VIDEO_SCRIPT"
-    echo "  # monitorar status download" >> "$VIDEO_SCRIPT"
-    echo "  downloadProcess_Show \$!" >> "$VIDEO_SCRIPT"
-    echo "  # vericiar se o download foi conluido com interrupcao" >> "$VIDEO_SCRIPT"
-    echo "  if [ \"\$?\" != \"0\" ];then" >> "$VIDEO_SCRIPT"
-    echo "      ./setup.sh" >> "$VIDEO_SCRIPT"
-    #echo "      echo \$\$" >> "$VIDEO_SCRIPT"
-    echo "      killall \$\$" >> "$VIDEO_SCRIPT"
-    echo "  fi" >> "$VIDEO_SCRIPT"
-    echo "}" >> "$VIDEO_SCRIPT"
-    echo "" >>"$VIDEO_SCRIPT"
+    echo "source $DOWNLOAD_PROCESS_SCRIPT" >> "$SCRIPTOUT"
+    echo "_showProgress(){" >> "$SCRIPTOUT"
+    echo "  # monitorar status download" >> "$SCRIPTOUT"
+    echo "  downloadProcess_Show \$!" >> "$SCRIPTOUT"
+    echo "  # vericiar se o download foi conluido com interrupcao" >> "$SCRIPTOUT"
+    echo "  if [ \"\$?\" != \"0\" ];then" >> "$SCRIPTOUT"
+    echo "      ./setup.sh" >> "$SCRIPTOUT"
+    #echo "      echo \$\$" >> "$SCRIPTOUT"
+    echo "      killall \$\$" >> "$SCRIPTOUT"
+    echo "  fi" >> "$SCRIPTOUT"
+    echo "}" >> "$SCRIPTOUT"
+    echo "" >>"$SCRIPTOUT"
 
     #remover ultima barra e envia para result,tratar parenteses
-    sed 's/..http/ http/ ; s/(/\\(/g ; s/)/\\)/g' result >> "$VIDEO_SCRIPT"
+    sed 's/..http/ http/ ; s/(/\\(/g ; s/)/\\)/g' result >> "$SCRIPTOUT"
     _insertBackgroundProcesses
     #sed 's/\\ http/ http/' tmp > result # remover ultima barra e envia para result
-    #echo "clear" >> "$VIDEO_SCRIPT"
+    #echo "clear" >> "$SCRIPTOUT"
     #cat links.sh | sed 's/(/\\(/g ; s/)/\\)/g' > tmp
 
-    #echo "echo \"------------------FIM---------------------------------\"" >> "$VIDEO_SCRIPT"
-    #echo "#GERADO POR ITALO NEY - italoneypessoa@gmail.com" >> "$VIDEO_SCRIPT"
+    #echo "echo \"------------------FIM---------------------------------\"" >> "$SCRIPTOUT"
+    #echo "#GERADO POR ITALO NEY - italoneypessoa@gmail.com" >> "$SCRIPTOUT"
     rm teste tmp teste2 result file
-    chmod +x "$VIDEO_SCRIPT"
+    chmod +x "$SCRIPTOUT"
 
     if [ ! -z $ALERT ]; then
-        $ALERT -u critical "Sucesso!" "Arquivo '$VIDEO_SCRIPT' criado.";
-        utils_showInfoMessage "Sucesso!" "\nArquivo '$VIDEO_SCRIPT' criado.";
-        exit 0;
+        $ALERT -u critical "Sucesso!" "Arquivo '$SCRIPTOUT' criado.";
+        utils_showInfoMessage "Sucesso!" "\nArquivo '$SCRIPTOUT' criado.";
+        #exit 0;
     else
-        echo "Sucesso!\nArquivo '$VIDEO_SCRIPT' criado.";
-        exit 0;
+        echo "Sucesso!\nArquivo '$SCRIPTOUT' criado.";
+        #exit 0;
     fi
 }
 
-# verificar se os arquivos existem NOMES.VIDEO
-if [ ! -e "$NAMES_FILE" ]; then 
-
-    if [ ! -z $ALERT ]; then
-        #$ALERT -u critical "Erro na execução!" "Arquivo '$NAMES_FILE' não existe!" ;
-        utils_showInfoMessage "Erro na execução!" "Arquivo '$NAMES_FILE' não existe!";
-        exit 1;
-    else
-        echo "Erro na execução!\nArquivo $NAMES_FILE não existe!" ;
-        exit 1;
-    fi
-    # verificar se os arquivos existem LINKS.VIDEO
-    elif [ ! -e "$LINKS_FILE" ]; then 
+ol_Main(){
+    VIDEOS="$1"
+    LINKS="$2"
+    SCRIPTOUT="$3"
+    # verificar se os arquivos existem NOMES.VIDEO
+    if [ ! -e "$VIDEOS" ]; then 
         if [ ! -z $ALERT ]; then
-        #$ALERT -u critical "Erro na execução!" "Arquivo '$LINKS_FILE' não existe!" ;
-        utils_showErrorMessage "Erro na execução!" "Arquivo '$LINKS_FILE' não existe!";
-        exit 1;
-    else
-        echo "Erro na execução!\nArquivo $LINKS_FILE não existe!" ;
-        exit 1;
+            #$ALERT -u critical "Erro na execução!" "Arquivo '$VIDEOS' não existe!" ;
+            utils_showInfoMessage "Erro na execução!" "Arquivo '$VIDEOS' não existe!";
+            exit 1;
+        else
+            echo "Erro na execução!\nArquivo $VIDEOS não existe!";
+            exit 1;
+        fi
+        # verificar se os arquivos existem LINKS.VIDEO
+        elif [ ! -e "$LINKS" ]; then 
+            if [ ! -z $ALERT ]; then
+            #$ALERT -u critical "Erro na execução!" "Arquivo '$LINKS' não existe!" ;
+            utils_showErrorMessage "Erro na execução!" "Arquivo '$LINKS' não existe!";
+            exit 1;
+        else
+            echo "Erro na execução!\nArquivo $LINKS não existe!" ;
+            exit 1;
+        fi
     fi
-fi
+
+    _createLinksFile
+}
 
 #exit 0;
