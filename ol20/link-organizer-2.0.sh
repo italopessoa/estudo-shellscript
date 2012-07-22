@@ -37,8 +37,9 @@ _showVideos(){
 _createGeralLinksFile(){
 	# importar script original de criação do script para
 	# organizcao dos links
-	source "$GENERATE_SCRIPT_DOWNLOAD_SCRIPT"
-	ol_createLinksFile
+	#source "$GENERATE_SCRIPT_DOWNLOAD_SCRIPT"
+	#ol_createLinksFile
+	ol_Main "$NAMES_FILE" "$LINKS_FILE" "$VIDEO_SCRIPT"
 }
 
 #exibir menu principal
@@ -79,9 +80,11 @@ linkorganizer_showMenu(){
 		fi
 	fi
 
-	# remover item Download caso nao exista o scipt
-	if [ ! -s "$VIDEO_SCRIPT" ];then
-		unset menuItems[6]
+	# remover item Download caso nao exista o script
+	if [ ! -e "$VIDEO_SCRIPT" ]; then
+		if [ ! -e "$LIST_SCRIPT" ];then
+			unset menuItems[6]
+		fi
 	fi
 
 	# armazenar item escolhido
@@ -119,7 +122,44 @@ linkorganizer_showMenu(){
 			;;
 		"Download" )
 			# executar script para download dos videos
-			./"$VIDEO_SCRIPT" 2> /dev/null
+			#./"$VIDEO_SCRIPT" 2> /dev/null
+			#$LIST_SCRIPT
+
+			#se o arquivo padrão existir
+			if [ -e "$VIDEO_SCRIPT" ]; then
+				# verificar se possui a lista de videos personalizada
+				if [ -e "$LIST_SCRIPT" ]; then
+					# se possuir exibir msg informando que pode escolher os vídeos que serão baixados
+					ITEM=$( dialog --stdout \
+							--title 'Selecione' \
+							--radiolist 'Quais vídeos deseja baixar?'  \
+							0 0 0  \
+							Padrão  'Todos os vídeos'      on  \
+							Lista 'Vídeos Selecionados'  off ) 
+
+					case "$ITEM" in
+						"Padrão" )
+							EXECUTE="$VIDEO_SCRIPT"
+						;;
+						"Lista" )
+							EXECUTE="$LIST_SCRIPT"
+						;;
+					esac
+
+				else
+					# se não possuir executar download com o script padrão	
+					EXECUTE="$VIDEO_SCRIPT"
+				fi
+			# se o arquivo padrão não existir pode existir uma lista
+			else
+				# se existir o arquivo a ser execuado será ele
+				if [ -e "$LIST_SCRIPT" ]; then
+					EXECUTE="$LIST_SCRIPT"
+					#exibir msg  informando que os vídeos baixados serão os da lista
+				fi
+			fi
+
+			./"$EXECUTE" 2> /dev/null
 			;;
 		"Sair" )
 
@@ -135,7 +175,11 @@ linkorganizer_showMenu(){
 			#kill -9 $$
 			clear
 			killall "$VIDEO_SCRIPT"
+			clear
 			exit 0;
 			;;
+		*)
+			clear
+		;;
 	esac
 }

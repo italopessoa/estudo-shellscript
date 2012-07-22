@@ -85,7 +85,7 @@ _getTitulo(){
 	continuar=$?
 	# enquanto o nome digitado já existir
 	# exibir alerta e pedir o nome novamente
-	while _nameAlreadyExists "$TITULO"; do
+	while utils_nameAlreadyExists "$TITULO" "$LIST_VIDEOS_FILE"; do
 		dialog \
         --title "Atenção" \
         --backtitle "$BACK_TITLE" \
@@ -114,10 +114,14 @@ _getTitulo(){
 			fi 
 		;;
 		1)	# reexibir menu principal
-			linkorganizer_showMenu "Erro" "Opção desconhecida";;
+			ol_Main "$NAMES_FILE" "$LINKS_FILE" "$VIDEO_SCRIPT"
+			linkorganizer_showMenu #
+		;;
 		2) echo  HELP ;;
 		255) echo sairE ;;
-		*) utils_showErrorMessage;;
+		*)
+			utils_showErrorMessage "Erro" "Opção desconhecida"
+		;;
 	esac
 }
 
@@ -132,18 +136,18 @@ _getLink(){
 		--inputbox 'Link do youtube:' \
 		0 100 
 	)
-		#adicioanr acima para melhorar
+		#adicionar acima para melhorar
 		#--and-widget \
        	#--yesno '\nVocê aceita os Termos da Licença?' 8 30
 
 	continuar=$?
 	# enquanto o link digitado já existir
 	# exibir alerta e pedir o link novamente
-	while _videoAlreadyExists "$LINK"; do
+	while utils_videoAlreadyExists "$LINK" "$LINKS_FILE"; do
 		dialog \
         --title "Atenção" \
         --backtitle "$BACK_TITLE" \
-        --msgbox "Esse link já é utilizado"  \
+        --msgbox "Esse link já é utilizado" \
         5 35
 
 		LINK=$( dialog  --stdout \
@@ -168,7 +172,9 @@ _getLink(){
 			fi
 		;;
 		1)	# reexibir menu principal
-			linkorganizer_showMenu ;;
+			ol_Main "$NAMES_FILE" "$LINKS_FILE" "$VIDEO_SCRIPT"
+			linkorganizer_showMenu 
+		;;
 		2) echo  HELP ;;
 		255) echo sairE ;;
 		*) utils_showErrorMessage "Erro" "Opção desconhecida";;
@@ -176,22 +182,20 @@ _getLink(){
 }
 
 # verificar se o nome do vídeo já é existe
-_nameAlreadyExists(){
-	echo "$@" > par
-	
+#_nameAlreadyExists(){
+	#echo "$@" > par
 	# o arquivo possui alguns caracteres antes do nome
 	# eles devem ser considerados apenas para comparar
 	#grep -x "[0-9]\{0,\} - @[0-9]\{0,\} $@" "$NAMES_FILE" > /dev/null
-
 	#solucao mais simples
-	grep -x "$@" "$LIST_VIDEOS_FILE"
-}
+#	grep -x "$@" "$LIST_VIDEOS_FILE"
+#}
 
 # verificar se o do vídeo já é utilizado
-_videoAlreadyExists(){
-	L=$(utils_youtubeRegex "$@")
-	grep "$L" "$LINKS_FILE"
-}
+#_videoAlreadyExists(){
+#	L=$(utils_youtubeRegex "$@")
+#	grep -x ".*$L" "$LINKS_FILE"
+#}
 
 # funcao principal
 getData_Main(){
@@ -214,6 +218,8 @@ getData_Main(){
 		# recuperar titulo do video
 		_getTitulo
 	done
+
+	#ol_Main "$NAMES_FILE" "$LINKS_FILE" "$VIDEO_SCRIPT"
 }
 
 #tail  -1 log | cut -d' ' -f4,5,6,7,10,11,12 | sed 's/\[download\]//g'
