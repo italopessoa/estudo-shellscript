@@ -5,7 +5,7 @@
 
 # remover todos os arquivos
 getData_clearData(){
-	for fileVar in $NAMES_FILE $LINKS_FILE $LIST_VIDEOS_FILE $AVAILABLE_VIDEO $SELECTED_VIDEOS; do
+	for fileVar in $NAMES_FILE $LINKS_FILE $LIST_VIDEOS_FILE $AVAILABLE_VIDEO $SELECTED_VIDEOS $NAMES_LIST $LINKS_LIST; do
 		if [ -e "$fileVar" ]; then
 			rm "$fileVar"
 		fi
@@ -54,7 +54,7 @@ _removeVideoOfFile(){
 
 # mensagem de sucesso ao adicionar um novo video
 _sucess(){
-	dialog                                 \
+	dialog \
 		--title "Vídeo adicionado a lista de downloads - [Esc] para parar."\
 		--backtitle "$BACK_TITLE" \
 		--yesno "$@\nEste arquivo deve permanecer?"  \
@@ -64,10 +64,17 @@ _sucess(){
 		# remover video do arquivo de links e nomes
 		_removeVideoOfFile
 	else
+		# criar arquivos necessarios para armazenar e gerenciar videos
+		if [ ! -e "$NAMES_FILE" ]; then
+			_createFiles
+		fi
+
 		# adicionar titulo ao arquivo nomes.video
 		_sendNameForFile $TITULO
 		# adicionar url ao arquivo links.video
 		_sendLinkForFile $LINK
+
+		ol_Main "$NAMES_FILE" "$LINKS_FILE" "$VIDEO_SCRIPT"
 	fi
 }
 
@@ -114,7 +121,7 @@ _getTitulo(){
 			fi 
 		;;
 		1)	# reexibir menu principal
-			ol_Main "$NAMES_FILE" "$LINKS_FILE" "$VIDEO_SCRIPT"
+			#ol_Main "$NAMES_FILE" "$LINKS_FILE" "$VIDEO_SCRIPT"
 			linkorganizer_showMenu #
 		;;
 		2) echo  HELP ;;
@@ -172,7 +179,7 @@ _getLink(){
 			fi
 		;;
 		1)	# reexibir menu principal
-			ol_Main "$NAMES_FILE" "$LINKS_FILE" "$VIDEO_SCRIPT"
+			#ol_Main "$NAMES_FILE" "$LINKS_FILE" "$VIDEO_SCRIPT"
 			linkorganizer_showMenu 
 		;;
 		2) echo  HELP ;;
@@ -205,10 +212,10 @@ getData_Main(){
 	# importar funcao do script para limpar url do youtube
 	#source youtubeRegex.sh
 
-	if [ ! -e "$NAMES_FILE" ]; then
+	#if [ ! -e "$NAMES_FILE" ]; then
 		# criar arquivos necessarios para armazenar e gerenciar videos
-		_createFiles
-	fi	
+	#	_createFiles
+	#fi	
 
 	continuar=0
 

@@ -60,7 +60,6 @@ linkorganizer_showMenu(){
 		"Sair Encerrar\\ programa"
 	)
 
-
 	if [ ! -e "$NAMES_FILE" ]; then
 		# remover todos os itens de menu que necessitam de dados
 		unset menuItems[1]
@@ -86,7 +85,7 @@ linkorganizer_showMenu(){
 			unset menuItems[6]
 		fi
 	fi
-
+x="$mi"
 	# armazenar item escolhido
 	res=$( eval \ dialog --stdout \
            --title \"Vídeos cadastrados\" \
@@ -115,6 +114,7 @@ linkorganizer_showMenu(){
 		"Limpar" )
 			# remover todos os arquivos
 			getData_clearData
+			linkorganizer_showMenu
 			;;
 		"Listar" )
 			# vídeos selecionados para download
@@ -143,6 +143,9 @@ linkorganizer_showMenu(){
 						;;
 						"Lista" )
 							EXECUTE="$LIST_SCRIPT"
+						;;
+						*)
+							linkorganizer_showMenu
 						;;
 					esac
 

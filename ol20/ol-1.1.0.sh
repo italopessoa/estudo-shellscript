@@ -120,20 +120,20 @@ ol_Main(){
         if [ ! -z $ALERT ]; then
             #$ALERT -u critical "Erro na execução!" "Arquivo '$VIDEOS' não existe!" ;
             utils_showInfoMessage "Erro na execução!" "Arquivo '$VIDEOS' não existe!";
-            exit 1;
+            #exit 1;
         else
             echo "Erro na execução!\nArquivo $VIDEOS não existe!";
-            exit 1;
+            #exit 1;
         fi
         # verificar se os arquivos existem LINKS.VIDEO
         elif [ ! -e "$LINKS" ]; then 
             if [ ! -z $ALERT ]; then
             #$ALERT -u critical "Erro na execução!" "Arquivo '$LINKS' não existe!" ;
             utils_showErrorMessage "Erro na execução!" "Arquivo '$LINKS' não existe!";
-            exit 1;
+            #exit 1;
         else
             echo "Erro na execução!\nArquivo $LINKS não existe!" ;
-            exit 1;
+            #exit 1;
         fi
     fi
 
