@@ -63,7 +63,7 @@ utils_nameAlreadyExists(){
     # eles devem ser considerados apenas para comparar
     #grep -x "[0-9]\{0,\} - @[0-9]\{0,\} $1" "$2" > /dev/null
     #solucao mais simples
-    grep -x "$1" "$2"
+    grep -x "$1" "$2" > /dev/null
 }
 
 # verificar se o do vídeo já é utilizado
@@ -71,5 +71,5 @@ utils_videoAlreadyExists(){
     # $1 valor a ser procurado
     # $2 arquivo onde deve ser procurado
     L=$(utils_youtubeRegex "$1")
-    grep -x ".*$1" "$2"
+    grep -x "[1-9]\{0,\} *$1" "$2" > /dev/null
 }
