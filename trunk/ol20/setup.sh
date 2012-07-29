@@ -7,7 +7,7 @@
 
 # "Italo Pessoa" <italoneypessoa@gmail.com>
 
-#export DIALOGRC=~/Documentos/shell-script/estudo-sehllscript/tema-verde.cfg
+export DIALOGRC=~/Documentos/shell-script/estudo-sehllscript/tema-verde.cfg
 export BACK_TITLE="Organizador de Links - 2.0 BETA"
 
 # arquivos utilizados pelo script

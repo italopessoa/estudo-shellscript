@@ -69,16 +69,10 @@ _sucess(){
 			_createFiles
 		fi
 
-		#TODO adicionar esse trecho de codigo na captura do link do video e nao no suecsso
-		./"$GET_VIDEO_FORMAT_SCRIPT" "$LINK"
-		format=$(cut -d":" -f1 format)
-		ext=$(cut -d":" -f2 format)
-
-
 		# adicionar titulo ao arquivo nomes.video
-		_sendNameForFile "$TITULO$ext"
+		_sendNameForFile "$TITULO"
 		# adicionar url ao arquivo links.video
-		_sendLinkForFile "$LINK -f$format"
+		_sendLinkForFile "$LINK"
 
 		ol_Main "$NAMES_FILE" "$LINKS_FILE" "$VIDEO_SCRIPT"
 	fi
@@ -98,20 +92,22 @@ _getTitulo(){
 	continuar=$?
 	# enquanto o nome digitado já existir
 	# exibir alerta e pedir o nome novamente
-	while utils_nameAlreadyExists "$TITULO" "$LIST_VIDEOS_FILE"; do
-		dialog \
-        --title "Atenção" \
-        --backtitle "$BACK_TITLE" \
-        --msgbox "Esse nome já é utilizado"  \
-        5 35
+	if [ -e "$LIST_VIDEOS_FILE" ]; then
+		while utils_nameAlreadyExists "$TITULO" "$LIST_VIDEOS_FILE"; do
+			dialog \
+	        --title "Atenção" \
+	        --backtitle "$BACK_TITLE" \
+	        --msgbox "Esse nome já é utilizado"  \
+	        5 35
 
-		TITULO=$( dialog  --stdout \
-				--title 'Dados do vídeo' \
-				--backtitle "$BACK_TITLE" \
-				--inputbox 'Título do vídeo:' \
-				0 100 )
-		continuar=$?
-	done
+			TITULO=$( dialog  --stdout \
+					--title 'Dados do vídeo' \
+					--backtitle "$BACK_TITLE" \
+					--inputbox 'Título do vídeo:' \
+					0 100 )
+			continuar=$?
+		done
+	fi
 
 	case "$continuar" in
 		0) 
@@ -159,36 +155,39 @@ _getLink(){
 	#TODO verificar se é link do you tube
 	#FIXME não está funcionando
 	if [ "$continuar" ];then
-	while ! utils_isUTubeLink "$LINK" ; do
-		dialog \
-	        --title "Atenção" \
-	        --backtitle "$BACK_TITLE" \
-	        --msgbox "Esse não é um link do YouTube" \
-	        5 35
-	        #_getLink
-	        LINK=$( dialog  --stdout \
-					--title 'Dados do vídeo' \
-					--backtitle "$BACK_TITLE" \
-					--inputbox 'Link do youtube:' \
-					0 100 )
-			continuar=$?
-	done
-
-	while utils_videoAlreadyExists "$LINK" "$LINKS_FILE"; do
+		while ! utils_isUTubeLink "$LINK" ; do
 			dialog \
-	        --title "Atenção" \
-	        --backtitle "$BACK_TITLE" \
-	        --msgbox "Esse link já é utilizado" \
-	        5 35
-	        #_getLink
-			LINK=$( dialog  --stdout \
-					--title 'Dados do vídeo' \
-					--backtitle "$BACK_TITLE" \
-					--inputbox 'Link do youtube:' \
-					0 100 )
-			continuar=$?
-	done
-fi
+		        --title "Atenção" \
+		        --backtitle "$BACK_TITLE" \
+		        --msgbox "Esse não é um link do YouTube" \
+		        5 35
+		        #_getLink
+		        LINK=$( dialog  --stdout \
+						--title 'Dados do vídeo' \
+						--backtitle "$BACK_TITLE" \
+						--inputbox 'Link do youtube:' \
+						0 100 )
+				continuar=$?
+		done
+
+		if [ -e "$LINKS_FILE" ]; then
+			while utils_videoAlreadyExists "$LINK" "$LINKS_FILE"; do
+					dialog \
+			        --title "Atenção" \
+			        --backtitle "$BACK_TITLE" \
+			        --msgbox "Esse link já é utilizado" \
+			        5 35
+			        #_getLink
+					LINK=$( dialog  --stdout \
+							--title 'Dados do vídeo' \
+							--backtitle "$BACK_TITLE" \
+							--inputbox 'Link do youtube:' \
+							0 100 )
+					continuar=$?
+			done
+		fi
+	fi
+
 	case "$continuar" in
 		0) 
 			if [ -z "$LINK" ]; then
@@ -200,6 +199,14 @@ fi
 				#_sendLinkForFile $link
 				# deixar o link com o formato correto para diminuir a chamada de funcoes
 				LINK=$(utils_youtubeRegex "$LINK")
+
+				./"$GET_VIDEO_FORMAT_SCRIPT" "$LINK"
+				format=$(cut -d":" -f1 format)
+				ext=$(cut -d":" -f2 format)
+
+				TITULO="$TITULO$ext"
+				LINK="$LINK -f$format"
+
 				# exibir mensagem de sucesso no cadastro do video
 				_sucess #"$titulo"
 			fi
