@@ -44,7 +44,7 @@ _createGeralLinksFile(){
 
 #exibir menu principal
 linkorganizer_showMenu(){
-	trap '' SIGHUP SIGINT SIGQUIT SIGTERM SIGSTOP
+	#trap '' SIGHUP SIGINT SIGQUIT SIGTERM SIGSTOP
 	# importar script para obtenção das informacoes dos videos
 	#source get-data.sh
 	#source checkVideos.sh

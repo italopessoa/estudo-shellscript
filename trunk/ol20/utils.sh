@@ -29,7 +29,9 @@ utils_showErrorMessage(){
 #corrigido para nao remover o formato do video
 utils_youtubeRegex(){
 	#echo "$@" | sed 's/?.*[^v]v=/?v=/g; s/&.*[^ -f[0-9]\{1,2\}]//g'
-    echo "$@" | sed 's/?.*[^v]v=/?v=/g; s/&.*[^ -f]//g'
+    #echo "$@" | sed 's/?.*[^v]v=/?v=/g; s/&.*[^ -f]//g'
+    echo "$@" | sed 's/?.*[^v]v=/?v=/g; s/&.*[^-f5]//g; s/-f/ -f/g'
+
 }
 
 # função para corrigir script de donwnload
@@ -83,6 +85,6 @@ utils_isUTubeLink(){
     if [ -n "$1" ]; then
         L=$(utils_youtubeRegex "$1")
         echo "$L" > aaa
-        echo "$L" | grep -x ".*.youtube.com/watch?v=.*" > assd
+        echo "$L" | grep -x ".*.youtube.com/watch?v=.*\|youtube.com/watch?v=.*" > /dev/null
     fi
 }
