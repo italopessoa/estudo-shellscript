@@ -65,7 +65,7 @@ utils_nameAlreadyExists(){
     # eles devem ser considerados apenas para comparar
     #grep -x "[0-9]\{0,\} - @[0-9]\{0,\} $1" "$2" > /dev/null
     #solucao mais simples
-    grep -x "$1" "$2" > /dev/null
+    grep -x "$1.mp4\|$1.flv" "$2" > /dev/null
 }
 
 # verificar se o do vídeo já é utilizado

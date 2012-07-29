@@ -1,5 +1,6 @@
 #!/bin/bash
-
+# exibir opções de formato de video
+# "Italo Pessoa" <italoneypessoa@gmail.com>
 youTubeFile=$(tempfile)
 wget -O "$youTubeFile" -o $(tempfile) "$1"
 
