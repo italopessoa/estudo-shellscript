@@ -64,6 +64,10 @@ _createLinksFile(){
     #modificar valor aleatório expecífico por 'vazio'
     sed 's/@123/\\ /g' teste > teste2
 
+    # remover '\' o final do link por vazio
+    # TODO adicinaor -i em todos os sed
+    sed -i 's/\\ -f/ -f/' teste2
+
     #remover '/' antes de http
     sed 's/\\ http/ http/' teste2 > teste
 

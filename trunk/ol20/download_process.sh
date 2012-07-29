@@ -6,8 +6,7 @@
 # 3 de julho de 2012
 # Versao 1 apenas a porcentagem do download
 #	Para a versão 2 pretendo exibir o nome do video sendo baixado
-
-trap 'teste' SIGINT
+#trap 'teste' SIGINT
 source utils.sh
 teste(){
 	dialog --stdout \
@@ -43,6 +42,8 @@ utils_running(){
 # funcao para exibir o gauge com o processo de download
 _downloadMonitor(){
 
+	
+
 	# PID do processo
 	DOWNLOAD=$1
 	# pegar a linha que contém o nome do arquivo
@@ -53,7 +54,7 @@ _downloadMonitor(){
 	ACTUAL_VIDEO=$(grep "Destination" "$DOWNLOAD_STATUS_LOG" | cut -d':' -f2 | sed 's/\ //')
 	utils_showInfoMessage "Aguarde" "Carregando informações!"
 	while [ -z "$ACTUAL_VIDEO" ]; do
-		ACTUAL_VIDEO=$(grep "Destination" $DOWNLOAD_STATUS_LOG | cut -d':' -f2 | sed 's/\ //')
+		ACTUAL_VIDEO=$(grep "Destination" $DOWNLOAD_STATUS_LOG | cut -d':' -f2 | sed 's/\ //')	
 	done
 	
 	# loop para checar o andamento do download
