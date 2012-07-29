@@ -39,8 +39,8 @@ _sendNameForFile(){
 _sendLinkForFile(){
 	number=$(wc -l $LINKS_FILE | cut -d' ' -f1)
 	number=$(( $number +1 ))
-	youtubeLink=$(utils_youtubeRegex $1)
-	echo "$number $youtubeLink" >> $LINKS_FILE
+	#youtubeLink=$(utils_youtubeRegex $1)
+	echo "$number $1" >> $LINKS_FILE
 }
 
 # remover video do arquiov de links e nomes
@@ -69,10 +69,16 @@ _sucess(){
 			_createFiles
 		fi
 
+		#TODO adicionar esse trecho de codigo na captura do link do video e nao no suecsso
+		./"$GET_VIDEO_FORMAT_SCRIPT" "$LINK"
+		format=$(cut -d":" -f1 format)
+		ext=$(cut -d":" -f2 format)
+
+
 		# adicionar titulo ao arquivo nomes.video
-		_sendNameForFile $TITULO
+		_sendNameForFile "$TITULO$ext"
 		# adicionar url ao arquivo links.video
-		_sendLinkForFile $LINK
+		_sendLinkForFile "$LINK -f$format"
 
 		ol_Main "$NAMES_FILE" "$LINKS_FILE" "$VIDEO_SCRIPT"
 	fi
@@ -150,21 +156,39 @@ _getLink(){
 	continuar=$?
 	# enquanto o link digitado já existir
 	# exibir alerta e pedir o link novamente
-	while utils_videoAlreadyExists "$LINK" "$LINKS_FILE"; do
+	#TODO verificar se é link do you tube
+	#FIXME não está funcionando
+	if [ "$continuar" ];then
+	while ! utils_isUTubeLink "$LINK" ; do
 		dialog \
-        --title "Atenção" \
-        --backtitle "$BACK_TITLE" \
-        --msgbox "Esse link já é utilizado" \
-        5 35
-
-		LINK=$( dialog  --stdout \
-				--title 'Dados do vídeo' \
-				--backtitle "$BACK_TITLE" \
-				--inputbox 'Link do youtube:' \
-				0 100 )
-		continuar=$?
+	        --title "Atenção" \
+	        --backtitle "$BACK_TITLE" \
+	        --msgbox "Esse não é um link do YouTube" \
+	        5 35
+	        #_getLink
+	        LINK=$( dialog  --stdout \
+					--title 'Dados do vídeo' \
+					--backtitle "$BACK_TITLE" \
+					--inputbox 'Link do youtube:' \
+					0 100 )
+			continuar=$?
 	done
 
+	while utils_videoAlreadyExists "$LINK" "$LINKS_FILE"; do
+			dialog \
+	        --title "Atenção" \
+	        --backtitle "$BACK_TITLE" \
+	        --msgbox "Esse link já é utilizado" \
+	        5 35
+	        #_getLink
+			LINK=$( dialog  --stdout \
+					--title 'Dados do vídeo' \
+					--backtitle "$BACK_TITLE" \
+					--inputbox 'Link do youtube:' \
+					0 100 )
+			continuar=$?
+	done
+fi
 	case "$continuar" in
 		0) 
 			if [ -z "$LINK" ]; then
@@ -174,8 +198,10 @@ _getLink(){
 			else
 				# enviar link para arquivo de links
 				#_sendLinkForFile $link
+				# deixar o link com o formato correto para diminuir a chamada de funcoes
+				LINK=$(utils_youtubeRegex "$LINK")
 				# exibir mensagem de sucesso no cadastro do video
-				_sucess "$titulo"
+				_sucess #"$titulo"
 			fi
 		;;
 		1)	# reexibir menu principal

@@ -26,8 +26,10 @@ utils_showErrorMessage(){
 
 # script simples para remover dados desnecessários da
 # url dos vídeos do youtube
+#corrigido para nao remover o formato do video
 utils_youtubeRegex(){
-	echo "$@" | sed 's/?.*[^v]v=/?v=/g; s/&.*//g'
+	#echo "$@" | sed 's/?.*[^v]v=/?v=/g; s/&.*[^ -f[0-9]\{1,2\}]//g'
+    echo "$@" | sed 's/?.*[^v]v=/?v=/g; s/&.*[^ -f]//g'
 }
 
 # função para corrigir script de donwnload
@@ -72,4 +74,15 @@ utils_videoAlreadyExists(){
     # $2 arquivo onde deve ser procurado
     L=$(utils_youtubeRegex "$1")
     grep -x "[1-9]\{0,\} *$1" "$2" > /dev/null
+}
+
+# verificar se realmente é um link do youTube
+utils_isUTubeLink(){
+    # $1 valor a ser procurado
+    # $2 arquivo onde deve ser procurado
+    if [ -n "$1" ]; then
+        L=$(utils_youtubeRegex "$1")
+        echo "$L" > aaa
+        echo "$L" | grep -x ".*.youtube.com/watch?v=.*" > assd
+    fi
 }

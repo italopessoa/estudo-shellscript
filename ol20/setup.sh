@@ -32,9 +32,9 @@ export GET_DATA_SCRIPT="get-data.sh"
 export UTILS_SCRIPT="utils.sh"
 export DOWNLOAD_PROCESS_SCRIPT="download_process.sh"
 export GENERATE_SCRIPT_DOWNLOAD_SCRIPT="ol-1.1.0.sh"
-#trap '' SIGHUP SIGINT SIGQUIT SIGTERM SIGSTOP
+export GET_VIDEO_FORMAT_SCRIPT="getFmt.sh"
 
-# funcoes utilziadas em diversos scripts
+# scripts que contem funcoes utilizadas em diversos scripts
 # centralizada a importação
 source "$LINK_ORGANIZER_SCRIPT"
 source "$GET_DATA_SCRIPT"
@@ -43,5 +43,10 @@ source "$UTILS_SCRIPT"
 source "$DOWNLOAD_PROCESS_SCRIPT"
 source "$GENERATE_SCRIPT_DOWNLOAD_SCRIPT"
 #source "$GENERAE_SCRIPT_DOWNLOAD_SCRIPT"
+
+
+#trap '' SIGHUP SIGINT SIGQUIT SIGTERM SIGSTOP
+
+
 # exibir menu principal
 linkorganizer_showMenu

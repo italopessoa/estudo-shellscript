@@ -44,6 +44,7 @@ _createGeralLinksFile(){
 
 #exibir menu principal
 linkorganizer_showMenu(){
+	trap '' SIGHUP SIGINT SIGQUIT SIGTERM SIGSTOP
 	# importar script para obtenção das informacoes dos videos
 	#source get-data.sh
 	#source checkVideos.sh
@@ -85,7 +86,7 @@ linkorganizer_showMenu(){
 			unset menuItems[6]
 		fi
 	fi
-x="$mi"
+
 	# armazenar item escolhido
 	res=$( eval \ dialog --stdout \
            --title \"Vídeos cadastrados\" \
