@@ -56,23 +56,31 @@ _createLinksFile(){
 
     #remover numeracao de linahs e numeração do vídeo
     #sed 's/.\{0,\}@/%r%/' file > abc
-    sed 's/.\{0,\}@[0-9]\{0,\} /%r%/' file > tmp
+    #sed 's/.\{0,\}@[0-9]\{0,\} /%r%/' file > tmp
+    sed  -i 's/.\{0,\}@[0-9]\{0,\} /%r%/' file
 
     #mudar espaços por valor aleatório expecífico
-    sed 's/ /@123/g' tmp > teste
+    #sed 's/ /@123/g' tmp > teste
+    sed -i 's/ /@123/g' file
 
     #modificar valor aleatório expecífico por 'vazio'
-    sed 's/@123/\\ /g' teste > teste2
+    #sed 's/@123/\\ /g' teste > teste2
+    sed -i 's/@123/\\ /g' file
 
     # remover '\' o final do link por vazio
     # TODO adicinaor -i em todos os sed
-    sed -i 's/\\ -f/ -f/' teste2
+    #sed -i 's/\\ -f/ -f/' teste2
+    sed -i 's/\\ -f/ -f/' file
 
-    #remover '/' antes de http
-    sed 's/\\ http/ http/' teste2 > teste
+    #remover '/' antes de http | www | youtube.com
+    #sed 's/\\ http/ http/' teste2 > teste
+    sed -i 's/\\ http/ http/' file
+    sed -i 's/\\ www/ www/' file
+    sed -i 's/\\ youtube.com/ youtube.com/' file
 
     #substituir valor aleatório controlado pelo comando
-    sed 's/%r%/youtube-dl -o /' teste2 > result
+    #sed 's/%r%/youtube-dl -o /' teste2 > result
+    sed -i 's/%r%/youtube-dl -o /' file
 
     #escrever script para download
     echo '#!/bin/bash' > "$SCRIPTOUT"
@@ -94,7 +102,10 @@ _createLinksFile(){
     echo "" >>"$SCRIPTOUT"
 
     #remover ultima barra e envia para result,tratar parenteses
-    sed 's/..http/ http/ ; s/(/\\(/g ; s/)/\\)/g' result >> "$SCRIPTOUT"
+    #sed 's/..http/ http/ ; s/(/\\(/g ; s/)/\\)/g' result >> "$SCRIPTOUT"
+    #sed 's/..http/ http/ ; s/(/\\(/g ; s/)/\\)/g' file >> "$SCRIPTOUT"
+    sed 's/.http/ http/ ; s/(/\\(/g ; s/)/\\)/g' file >> "$SCRIPTOUT"
+    
     _insertBackgroundProcesses
     #sed 's/\\ http/ http/' tmp > result # remover ultima barra e envia para result
     #echo "clear" >> "$SCRIPTOUT"

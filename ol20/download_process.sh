@@ -10,10 +10,10 @@
 source utils.sh
 teste(){
 	dialog --stdout \
-                --title "asdasdadasd" \
-                --backtitle "$BACK_TITLE" \
-                --yesno "Deseja realmente cancelar?"  \
-                0 0
+        --title "asdasdadasd" \
+        --backtitle "$BACK_TITLE" \
+        --yesno "Deseja realmente cancelar?"  \
+        0 0
 	if [ "$?" == "0" ]; then
 		kill -9 $DOWNLOAD 2> /dev/null
 		#exit 10
@@ -39,10 +39,12 @@ utils_running(){
 	ps $1 | grep $1 >/dev/null;
 }
 
+_videoIsAlreadyDownloaded(){
+	ls | grep -x "$1"
+}
+
 # funcao para exibir o gauge com o processo de download
 _downloadMonitor(){
-
-	
 
 	# PID do processo
 	DOWNLOAD=$1
@@ -56,6 +58,10 @@ _downloadMonitor(){
 	while [ -z "$ACTUAL_VIDEO" ]; do
 		ACTUAL_VIDEO=$(grep "Destination" $DOWNLOAD_STATUS_LOG | cut -d':' -f2 | sed 's/\ //')	
 	done
+
+	if [ _videoIsAlreadyDownloaded "$ACTUAL_VIDEO" ];then
+		#utils_showInfoMessage "Vídeo não pode ser baixado" "Esse vídeo já foi baixado"
+	fi
 	
 	# loop para checar o andamento do download
 	(
