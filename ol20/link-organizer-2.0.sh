@@ -95,95 +95,114 @@ linkorganizer_showMenu(){
            0 0 0 ${menuItems[@]} 
 		)
 
-	case "$res" in
-		"Adicionar" )
-			# adicionar um novo video
-			getData_Main
-			;;
-		"Vídeos" )
-			# exibir videos adicioandos a lista
-			_showVideos "$LIST_VIDEOS_FILE" "Lista de vídeos"
-			;;
-		"Gerar" )
-			#source ol-1.1.0.sh
-			_createGeralLinksFile
-			;;
-		"Selecionar" )
-			# selecionar videos para download
-			checkVideos_Main
-			;;
-		"Limpar" )
-			# remover todos os arquivos
-			getData_clearData
-			linkorganizer_showMenu
-			;;
-		"Listar" )
-			# vídeos selecionados para download
-			_showVideos "$SELECTED_VIDEOS" "Vídeos selecionado para download"
-			;;
-		"Download" )
-			# executar script para download dos videos
-			#./"$VIDEO_SCRIPT" 2> /dev/null
-			#$LIST_SCRIPT
+	if [ "$?" ];then
+		case "$res" in
+			"Adicionar" )
+				# adicionar um novo video
+				getData_Main
+				;;
+			"Vídeos" )
+				# exibir videos adicioandos a lista
+				_showVideos "$LIST_VIDEOS_FILE" "Lista de vídeos"
+				;;
+			"Gerar" )
+				#source ol-1.1.0.sh
+				_createGeralLinksFile
+				;;
+			"Selecionar" )
+				# selecionar videos para download
+				checkVideos_Main
+				;;
+			"Limpar" )
+				# remover todos os arquivos
+				getData_clearData
+				linkorganizer_showMenu
+				;;
+			"Listar" )
+				# vídeos selecionados para download
+				_showVideos "$SELECTED_VIDEOS" "Vídeos selecionado para download"
+				;;
+			"Download" )
+				# executar script para download dos videos
+				#./"$VIDEO_SCRIPT" 2> /dev/null
+				#$LIST_SCRIPT
 
-			#se o arquivo padrão existir
-			if [ -e "$VIDEO_SCRIPT" ]; then
-				# verificar se possui a lista de videos personalizada
-				if [ -e "$LIST_SCRIPT" ]; then
-					# se possuir exibir msg informando que pode escolher os vídeos que serão baixados
-					ITEM=$( dialog --stdout \
-							--title 'Selecione' \
-							--radiolist 'Quais vídeos deseja baixar?'  \
-							0 0 0  \
-							Padrão  'Todos os vídeos'      on  \
-							Lista 'Vídeos Selecionados'  off ) 
+				#se o arquivo padrão existir
+				if [ -e "$VIDEO_SCRIPT" ]; then
+					# verificar se possui a lista de videos personalizada
+					if [ -e "$LIST_SCRIPT" ]; then
+						# se possuir exibir msg informando que pode escolher os vídeos que serão baixados
+						ITEM=$( dialog --stdout \
+								--title 'Selecione' \
+								--radiolist 'Quais vídeos deseja baixar?'  \
+								0 0 0  \
+								Padrão  'Todos os vídeos'      on  \
+								Lista 'Vídeos Selecionados'  off ) 
 
-					case "$ITEM" in
-						"Padrão" )
-							EXECUTE="$VIDEO_SCRIPT"
-						;;
-						"Lista" )
-							EXECUTE="$LIST_SCRIPT"
-						;;
-						*)
-							linkorganizer_showMenu
-						;;
-					esac
+						case "$ITEM" in
+							"Padrão" )
+								EXECUTE="$VIDEO_SCRIPT"
+							;;
+							"Lista" )
+								EXECUTE="$LIST_SCRIPT"
+							;;
+							*)
+								linkorganizer_showMenu
+							;;
+						esac
 
+					else
+						# se não possuir executar download com o script padrão	
+						EXECUTE="$VIDEO_SCRIPT"
+					fi
+				# se o arquivo padrão não existir pode existir uma lista
 				else
-					# se não possuir executar download com o script padrão	
-					EXECUTE="$VIDEO_SCRIPT"
+					# se existir o arquivo a ser execuado será ele
+					if [ -e "$LIST_SCRIPT" ]; then
+						EXECUTE="$LIST_SCRIPT"
+						#exibir msg  informando que os vídeos baixados serão os da lista
+					fi
 				fi
-			# se o arquivo padrão não existir pode existir uma lista
-			else
-				# se existir o arquivo a ser execuado será ele
-				if [ -e "$LIST_SCRIPT" ]; then
-					EXECUTE="$LIST_SCRIPT"
-					#exibir msg  informando que os vídeos baixados serão os da lista
-				fi
-			fi
 
-			./"$EXECUTE" 2> /dev/null
+				./"$EXECUTE" 2> /dev/null
+				;;
+			"Sair" )
+
+				vet=($PROCESS_KILL)
+				#foreach
+				#for key in ${!vet[*]}; do
+				#	echo ${vet[$key]};
+				#done
+
+				# encerrar programa
+				#export STOP_PROCESSES="1"
+				#p=$(top -b -n1 | grep bash | cut -d' ' -f1)
+				#kill -9 $$
+				clear
+				#killall "$VIDEO_SCRIPT"
+				killall "$EXECUTE"
+				clear
+				exit 0;
+				;;
+			*)
+				clear
 			;;
-		"Sair" )
+		esac
+	else
+		vet=($PROCESS_KILL)
+		#foreach
+		#for key in ${!vet[*]}; do
+		#	echo ${vet[$key]};
+		#done
 
-			vet=($PROCESS_KILL)
-			#foreach
-			#for key in ${!vet[*]}; do
-			#	echo ${vet[$key]};
-			#done
-
-			# encerrar programa
-			#export STOP_PROCESSES="1"
-			#p=$(top -b -n1 | grep bash | cut -d' ' -f1)
-			#kill -9 $$
-			clear
-			killall "$VIDEO_SCRIPT"
-			clear
-			exit 0;
-			;;
-		*)
-			clear
-		;;
-	esac
+		# encerrar programa
+		#export STOP_PROCESSES="1"
+		#p=$(top -b -n1 | grep bash | cut -d' ' -f1)
+		#kill -9 $$
+		clear
+		#killall "$VIDEO_SCRIPT"
+		killall "$EXECUTE"
+		clear
+		exit 1;
+	fi
 }
