@@ -10,10 +10,10 @@
 source utils.sh
 teste(){
 	dialog --stdout \
-        --title "asdasdadasd" \
+        --title "Cancelar download atual" \
         --backtitle "$BACK_TITLE" \
         --yesno "Deseja realmente cancelar?"  \
-        0 0
+        5 30
 	if [ "$?" == "0" ]; then
 		kill -9 $DOWNLOAD 2> /dev/null
 		#exit 10
@@ -34,35 +34,18 @@ _removeSpaces(){
 }
 
 # funcao para verificar se download ainda esta ocorrendo
-utils_running(){
+#utils_running(){
 	# $1 é o PID do processo
-	ps $1 | grep $1 >/dev/null;
-}
+#	ps $1 | grep $1 >/dev/null;
+#}
 
 _videoIsAlreadyDownloaded(){
-	ls | grep -x "$1"
+	ls | grep -x "$1" > /dev/null
 }
 
-# funcao para exibir o gauge com o processo de download
-_downloadMonitor(){
-
-	# PID do processo
-	DOWNLOAD=$1
-	# pegar a linha que contém o nome do arquivo
-	# separar apenas o nome
-	# remover o espaço que fica no início
-	STATUS_DOWNLOAD="Download em progresso\n"
-	#ACTUAL_VIDEO=$(sed -n 5p status | cut -d':' -f2 | sed 's/\ //')
-	ACTUAL_VIDEO=$(grep "Destination" "$DOWNLOAD_STATUS_LOG" | cut -d':' -f2 | sed 's/\ //')
-	utils_showInfoMessage "Aguarde" "Carregando informações!"
-	while [ -z "$ACTUAL_VIDEO" ]; do
-		ACTUAL_VIDEO=$(grep "Destination" $DOWNLOAD_STATUS_LOG | cut -d':' -f2 | sed 's/\ //')	
-	done
-
-	if [ _videoIsAlreadyDownloaded "$ACTUAL_VIDEO" ];then
-		#utils_showInfoMessage "Vídeo não pode ser baixado" "Esse vídeo já foi baixado"
-	fi
-	
+#exibir progresso do download
+_showProgressGauge(){
+trap 'teste' SIGINT
 	# loop para checar o andamento do download
 	(
 		# enquanto o download estiver sendo executado a verificação será feita
@@ -73,7 +56,7 @@ _downloadMonitor(){
 			# recuperar a quantidade de caracteres que foram encontrado com a regex
 			# os caracteres representam cada entrada do youtube-dl no arquivo
 			QTD_DOWNLOAD_ENTRIES=$(tail -1 "$DOWNLOAD_STATUS_LOG" | grep -o "\[download\]" | wc -w)
-	
+
 			# o primeiro campo da regex será vazio,  por isso é preciso incrementar mais um no total
 			(( QTD_DOWNLOAD_ENTRIES++ ))
 
@@ -92,10 +75,51 @@ _downloadMonitor(){
 
 		# aqui o download ja foi concluido, exibir a porcentagem final
 		echo 100
-		rm "$DOWNLOAD_STATUS_LOG"
+		echo "$ACTUAL_VIDEO" >> "$VIDEOS_DOWNLOADED_LIST_FILE"
+
+		# remover arquivos criados durante o processo
+		test -e "$DOWNLOAD_STATUS_LOG" && rm "$DOWNLOAD_STATUS_LOG"
 
 		# redirecioanr valores para o gauge
 	) | dialog --title "Baixando vídeo" --backtitle "$BACK_TITLE" --gauge "$STATUS_DOWNLOAD$ACTUAL_VIDEO" 8 40 0
+}
+
+# funcao para exibir o gauge com o processo de download
+_downloadMonitor(){
+	trap '' SIGINT
+	# PID do processo
+	DOWNLOAD=$1
+	# pegar a linha que contém o nome do arquivo
+	# separar apenas o nome
+	# remover o espaço que fica no início
+	STATUS_DOWNLOAD="Download em progresso\n"
+	#ACTUAL_VIDEO=$(sed -n 5p status | cut -d':' -f2 | sed 's/\ //')
+	ACTUAL_VIDEO=$(grep "Destination" "$DOWNLOAD_STATUS_LOG" | cut -d':' -f2 | sed 's/\ //')
+	utils_showInfoMessage "Aguarde" "Carregando informações!"
+	while [ -z "$ACTUAL_VIDEO" ]; do
+		ACTUAL_VIDEO=$(grep "Destination" $DOWNLOAD_STATUS_LOG | cut -d':' -f2 | sed 's/\ //')	
+	done
+
+	#verificar se arquivo com videos baixados existe
+	if [ -e "$VIDEOS_DOWNLOADED_LIST_FILE" ];then
+		# se existir verificar se o vídeo atual ja foi baixado
+		if [ -z $(grep -x "$ACTUAL_VIDEO" "$VIDEOS_DOWNLOADED_LIST_FILE") ]; then
+			# se não tiver sido baixado continuar processo normal
+			_showProgressGauge
+		else
+			# se tiver sido baixado exibir msg para o usuario e terminar processo
+			# remover arquivos restantes
+			#echo "$ACTUAL_VIDEO" >> atual
+			utils_showInfoMessage "Vídeo não pode ser baixado" "O vídeo \"$ACTUAL_VIDEO\" já foi baixado"
+			kill -9 "$1"
+
+			# remover arquivos criados durante o processo
+			test -e "$DOWNLOAD_STATUS_LOG" && rm "$DOWNLOAD_STATUS_LOG"
+			test -e "$ACTUAL_VIDEO".part && rm "$ACTUAL_VIDEO".part
+		fi
+	else
+		_showProgressGauge
+	fi
 }
 
 # exibir processo de download do video atual
