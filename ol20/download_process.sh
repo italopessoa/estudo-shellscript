@@ -81,7 +81,7 @@ trap 'teste' SIGINT
 		test -e "$DOWNLOAD_STATUS_LOG" && rm "$DOWNLOAD_STATUS_LOG"
 
 		# redirecioanr valores para o gauge
-	) | dialog --title "Baixando vídeo" --backtitle "$BACK_TITLE" --gauge "$STATUS_DOWNLOAD$ACTUAL_VIDEO" 8 40 0
+	) | dialog --title "Baixando vídeo" --backtitle "$BACK_TITLE" --gauge "$STATUS_DOWNLOAD$ACTUAL_VIDEO" 8 80 0
 }
 
 # funcao para exibir o gauge com o processo de download
@@ -94,10 +94,10 @@ _downloadMonitor(){
 	# remover o espaço que fica no início
 	STATUS_DOWNLOAD="Download em progresso\n"
 	#ACTUAL_VIDEO=$(sed -n 5p status | cut -d':' -f2 | sed 's/\ //')
-	ACTUAL_VIDEO=$(grep "Destination" "$DOWNLOAD_STATUS_LOG" | cut -d':' -f2 | sed 's/\ //')
+	ACTUAL_VIDEO=$(grep "Destination" "$DOWNLOAD_STATUS_LOG" | cut -d':' -f2- | sed 's/\ //')
 	utils_showInfoMessage "Aguarde" "Carregando informações!"
 	while [ -z "$ACTUAL_VIDEO" ]; do
-		ACTUAL_VIDEO=$(grep "Destination" $DOWNLOAD_STATUS_LOG | cut -d':' -f2 | sed 's/\ //')	
+		ACTUAL_VIDEO=$(grep "Destination" $DOWNLOAD_STATUS_LOG | cut -d':' -f2- | sed 's/\ //')	
 	done
 
 	#verificar se arquivo com videos baixados existe

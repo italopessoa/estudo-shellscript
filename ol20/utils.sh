@@ -84,7 +84,8 @@ utils_videoAlreadyExists(){
     # $1 valor a ser procurado
     # $2 arquivo onde deve ser procurado
     L=$(utils_youtubeRegex "$1")
-    grep -x "[1-9]\{0,\} *$1" "$2" > /dev/null
+    grep -x "[0-9]\{0,\}\ $L\ -f.*" "$2" > /dev/null
+    #grep -x "[1-9]\{0,\} *$L" "$2" > /dev/null
 }
 
 # verificar se realmente é um link do youTube
@@ -93,7 +94,17 @@ utils_isUTubeLink(){
     # $2 arquivo onde deve ser procurado
     if [ -n "$1" ]; then
         L=$(utils_youtubeRegex "$1")
-        echo "$L" > aaa
+        #echo "$L" > aaa
         echo "$L" | grep -x ".*.youtube.com/watch?v=.*\|youtube.com/watch?v=.*" > /dev/null
     fi
+}
+
+# modificar o modo de obtencao dos dados
+# standard-clipboard
+# full-clipboard
+# standard
+utils_changeGetDaMethod(){
+    # $1 modelo
+    l=$(grep -n "GET_DATA_METHOD" teste.sh | cut -d: -f1)
+    x=$(sed "$l s/\$GETDATA_.*[^\"]/$1/" teste.sh )
 }

@@ -23,9 +23,13 @@ export AVAILABLE_VIDEO="available"
 export SELECTED_VIDEOS="selected_videos"
 export DOWNLOAD_STATUS_LOG="download_status.log"
 export PROCESS_KILL=""
+export GETDATA_CLIPBOARD_STANDARD="standard-clipboard"
+export GETDATA_CLIPBOARD_FULL="full-clipboard"
+export GETDATA_STANDARD="standard"
+export GET_DATA_METHOD="$GETDATA_CLIPBOARD_FULL"
 
 # scripts utilizados
-# centralizados em variaveis para que possam ser utilizados em qualquer  diretorio
+# centralizadosscripts  variaveis para que possam ser utilizados em qualquer  diretorio
 export LINK_ORGANIZER_SCRIPT="link-organizer-2.0.sh"
 export CHECK_VIDEOS_SCRIPT="checkVideos.sh"
 export GET_DATA_SCRIPT="get-data.sh"

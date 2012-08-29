@@ -45,13 +45,60 @@ _sendLinkForFile(){
 
 # remover video do arquiov de links e nomes
 _removeVideoOfFile(){
-	linha=$(wc -l titulos | cut -d' ' -f1)
+	linha=$(wc -l "$LIST_VIDEOS_FILE" | cut -d' ' -f1)
+	echo "linha" >fff
 	sed -i "$linha"d $NAMES_FILE
 	sed -i "$linha"d $AVAILABLE_VIDEO
 	sed -i "$linha"d $LIST_VIDEOS_FILE
 	sed -i "$linha"d $LINKS_FILE
 }
 
+
+
+#TODO verificar se o titulo ja nao foi utilizado
+#TODO um link nao pode ser o titulo do video
+#TODO na parte do link fazer a verificaçao se é realmente um link do youtube válido
+# _validTitle(){
+	
+# 	# se estiver utilizando o copiar, fazer esse teste
+# 	if [ "$VAR" ]; then
+# 		while [ "$TITULO" == "None" ] || [ ! "$TITULO" ]; do
+# 			#verificar se está utilizando o script de copiar para exibir msg diferente
+# 			utils_showInfoMessage "Valor não válido" "Cópie o  titulo novamente"
+# 			#_validTitle
+# 			dialog --title "Copie o texto desejado" --msgbox "Ao copiar selecione a opcao para recuperar os dados" 5 70
+# 			TITULO=$(python get-clipboard.py)
+# 			_validTitle
+# 		done
+# 	fi
+
+# 	if [ -e "$LIST_VIDEOS_FILE" ]; then
+# 		echo "$TITULO" > macumba
+# 		while utils_nameAlreadyExists "$TITULO" "$LIST_VIDEOS_FILE"; do
+# 			dialog \
+# 		    --title "Atenção" \
+# 		    --backtitle "$BACK_TITLE" \
+# 		    --msgbox "Esse nome já é utilizado"  \
+# 		    5 35
+
+# 		    # if nao estiver utilizadno o copiar, pedir novamente o titulo
+# 		    if [ "$VAR" ]; then
+# 		    	dialog --title "Copie o texto desejado" --msgbox "Ao copiar selecione a opcao para recuperar os dados" 5 70
+# 				TITULO=$(python get-clipboard.py)
+# 				_validTitle
+# 		    else
+# 		    	TITULO=$( dialog  --stdout \
+# 					--title 'Dados do vídeo' \
+# 					--backtitle "$BACK_TITLE" \
+# 					--inputbox 'Título do vídeo:' \
+# 					0 100 )
+# 				continuar=$?
+# 		    fi
+# 		done
+# 	fi
+# }
+
+#testando
 # mensagem de sucesso ao adicionar um novo video
 _sucess(){
 	dialog \
@@ -62,7 +109,9 @@ _sucess(){
 
 	if [ "$?" -eq "1" ]; then
 		# remover video do arquivo de links e nomes
-		_removeVideoOfFile
+		#_removeVideoOfFile
+		#nao fazer nada
+		echo "x" >/dev/null
 	else
 		# criar arquivos necessarios para armazenar e gerenciar videos
 		if [ ! -e "$NAMES_FILE" ]; then
@@ -76,38 +125,218 @@ _sucess(){
 
 		ol_Main "$NAMES_FILE" "$LINKS_FILE" "$VIDEO_SCRIPT"
 	fi
+
+	if [ ! "$GET_DATA_METHOD" = "$GETDATA_STANDARD" ]; then
+		dialog \
+		--title "Essa configuração não possui opção de cancelamento."\
+		--backtitle "$BACK_TITLE" \
+		--yesno "Deseja continuar?"  \
+		0 0
+
+		if [ $? -eq 1 ]; then
+			linkorganizer_showMenu
+		fi
+	fi
+}
+
+#TODO verificar se o titulo ja nao foi utilizado
+#TODO um link nao pode ser o titulo do video
+#TODO na parte do link fazer a verificaçao se é realmente um link do youtube válido
+_validClipboardTitle(){
+	
+	# se estiver utilizando o copiar, fazer esse teste
+	while [ "$TITULO" == "None" ] || [ ! "$TITULO" ]; do
+		#verificar se está utilizando o script de copiar para exibir msg diferente
+		utils_showInfoMessage "Valor inválido" "Cópie o  titulo novamente"
+		getClipboardTitle
+	done
+
+	if [ -e "$LIST_VIDEOS_FILE" ]; then
+		while utils_nameAlreadyExists "$TITULO" "$LIST_VIDEOS_FILE"; do
+			dialog \
+		    --title "Atenção" \
+		    --backtitle "$BACK_TITLE" \
+		    --msgbox "Esse nome já é utilizado"  \
+		    5 35
+
+	    	#dialog --title "Copie o texto desejado" --msgbox "Ao copiar selecione a opcao para recuperar os dados" 5 70
+	    	continuar=$?
+			if [ $continuar -eq 0 ]; then
+				getClipboardTitle
+			fi
+		done
+	fi
+}
+
+_validClipboardLink(){
+	while ! utils_isUTubeLink "$LINK" ; do
+		dialog \
+	        --title "Atenção" \
+	        --backtitle "$BACK_TITLE" \
+	        --msgbox "Esse não é um link do YouTube" \
+	        5 35
+
+	        if [ $continuar -eq 0 ]; then
+				_getClipboardLink
+			fi
+	        
+	done
+
+	if [ -e "$LINKS_FILE" ]; then
+		while utils_videoAlreadyExists "$LINK" "$LINKS_FILE"; do
+				dialog \
+		        --title "Atenção" \
+		        --backtitle "$BACK_TITLE" \
+		        --msgbox "Esse link já é utilizado" \
+		        5 35
+
+		        if [ $continuar -eq 0 ]; then
+					_getClipboardLink
+				fi
+		done
+	fi
+}
+
+_getClipboardTitle(){
+	dialog --title "Copie o texto desejado" --msgbox "Ao copiar selecione a opção para recuperar os dados" 5 70
+	continuar=$?
+	if [ $continuar -eq 0 ]; then
+		TITULO=$(python get-clipboard.py)
+		_validClipboardTitle
+	fi
+}
+
+_getClipboardLink(){
+	dialog --title "Copie o link desejado" --msgbox "Ao copiar selecione a opção para recuperar os dados" 5 70
+	LINK=$(python get-clipboard.py)
+	_validClipboardLink
+}
+
+_getDataFromUrl(){
+	
+	dialog --title "Copie o link desejado" --msgbox "Ao copiar selecione a opção para recuperar os dados.
+	 \nAguarde o processamento dos dados." 6 70
+
+	LINK=$(python get-clipboard.py)
+	while ! utils_isUTubeLink "$LINK" ; do
+		dialog \
+	        --title "Atenção" \
+	        --backtitle "$BACK_TITLE" \
+	        --msgbox "Esse não é um link do YouTube" \
+	        5 35
+
+		dialog --title "Copie o link desejado" --msgbox "Ao copiar selecione a opção para recuperar os dados.
+		 \nAguarde o processamento dos dados." 6 70
+		_getDataFromUrl
+	done
+
+	youTubeFile=$(tempfile)
+	wget -O "$youTubeFile" -o $(tempfile) "$LINK"
+	LINK=$1
+	TITLE_REGEX="<meta property=\"og:title"
+	LINK_REGEX="<meta property=\"og:url"
+
+	LINK=$(grep "$LINK_REGEX" "$youTubeFile" | sed 's/.*="// ;s/">//')
+	TITULO=$(grep "$TITLE_REGEX" "$youTubeFile" | sed 's/.*="// ;s/">//')
+
+	if [ -e "$LIST_VIDEOS_FILE" ]; then
+		while utils_nameAlreadyExists "$TITULO" "$LIST_VIDEOS_FILE"; do
+			TITULO=$( dialog --stdout \
+		    --title "Atenção" \
+		    --backtitle "$BACK_TITLE" \
+		    --inputbox "Esse nome já é utilizado, forneça outro" 7 75 )
+
+	    	#dialog --title "Copie o texto desejado" --msgbox "Ao copiar selecione a opcao para recuperar os dados" 5 70
+	    	continuar=$?
+		done
+	fi
+
+	case "$continuar" in
+		0) 
+			if [ -z "$TITULO" ]; then
+				# exibir mensagem
+				while [ -z "$TITULO" ]; do
+					TITULO=""
+					TITULO=$( dialog --stdout \
+					    --title "Dados incompletos" \
+					    --backtitle "$BACK_TITLE" \
+					    --inputbox "Insira o título do vídeo!"  \
+					    7 75 )
+					continuar=$?
+				done
+			else
+				if [ $continuar -eq 0 ]; then
+					if [ -e "$LINKS_FILE" ]; then
+						if utils_videoAlreadyExists "$LINK" "$LINKS_FILE" ; then
+							dialog \
+						        --title "Atenção" \
+						        --backtitle "$BACK_TITLE" \
+						        --msgbox "Esse link já é utilizado" \
+						        5 35
+
+					        if [ $continuar -eq 0 ]; then
+								_getDataFromUrl
+							fi
+						fi
+					fi
+				fi
+			fi 
+		;;
+		1)	# reexibir menu principal
+			#ol_Main "$NAMES_FILE" "$LINKS_FILE" "$VIDEO_SCRIPT"
+			linkorganizer_showMenu #
+		;;
+	esac
 }
 
 # recuperar nome do video
 _getTitulo(){
 	# armazenar titulo do video
 	TITULO=""
-	TITULO=$( dialog  --stdout \
-		--title 'Dados do vídeo' \
-		--backtitle "$BACK_TITLE" \
-		--inputbox 'Título do vídeo:' \
-		0 100 
-	)
 
-	continuar=$?
-	# enquanto o nome digitado já existir
-	# exibir alerta e pedir o nome novamente
-	if [ -e "$LIST_VIDEOS_FILE" ]; then
-		while utils_nameAlreadyExists "$TITULO" "$LIST_VIDEOS_FILE"; do
-			dialog \
-	        --title "Atenção" \
-	        --backtitle "$BACK_TITLE" \
-	        --msgbox "Esse nome já é utilizado"  \
-	        5 35
+	case "$GET_DATA_METHOD" in
 
+		"$GETDATA_STANDARD" )
 			TITULO=$( dialog  --stdout \
 					--title 'Dados do vídeo' \
 					--backtitle "$BACK_TITLE" \
 					--inputbox 'Título do vídeo:' \
-					0 100 )
-			continuar=$?
-		done
-	fi
+					0 100 
+				)
+
+				continuar=$?
+				# if [ "$continuar" -eq "0" ]; then
+				# 	_validTitle
+				# fi
+				# enquanto o nome digitado já existir
+				# exibir alerta e pedir o nome novamente
+				if [ -e "$LIST_VIDEOS_FILE" ]; then
+					while utils_nameAlreadyExists "$TITULO" "$LIST_VIDEOS_FILE"; do
+						dialog \
+				       --title "Atenção" \
+				       --backtitle "$BACK_TITLE" \
+				       --msgbox "Esse nome já é utilizado"  \
+				       5 35
+
+						TITULO=$( dialog  --stdout \
+								--title 'Dados do vídeo' \
+								--backtitle "$BACK_TITLE" \
+								--inputbox 'Título do vídeo:' \
+								0 100 )
+						continuar=$?
+					done
+				fi
+		;;
+
+		"$GETDATA_CLIPBOARD_STANDARD")
+			_getClipboardTitle
+		;;
+
+		"$GETDATA_CLIPBOARD_FULL")
+			_getLink
+		;;
+	esac
+	
 
 	case "$continuar" in
 		0) 
@@ -134,59 +363,73 @@ _getTitulo(){
 	esac
 }
 
-
 # recuperar link do video
 _getLink(){
 	# armazenar url do video
 	LINK=""
-	LINK=$( dialog  --stdout \
-		--title 'Dados do vídeo' \
-		--backtitle "$BACK_TITLE" \
-		--inputbox 'Link do youtube:' \
-		0 100 
-	)
-		#adicionar acima para melhorar
-		#--and-widget \
-       	#--yesno '\nVocê aceita os Termos da Licença?' 8 30
 
-	continuar=$?
-	# enquanto o link digitado já existir
-	# exibir alerta e pedir o link novamente
-	#TODO verificar se é link do you tube
-	#FIXME não está funcionando
-	if [ "$continuar" ];then
-		while ! utils_isUTubeLink "$LINK" ; do
-			dialog \
-		        --title "Atenção" \
-		        --backtitle "$BACK_TITLE" \
-		        --msgbox "Esse não é um link do YouTube" \
-		        5 35
-		        #_getLink
-		        LINK=$( dialog  --stdout \
-						--title 'Dados do vídeo' \
-						--backtitle "$BACK_TITLE" \
-						--inputbox 'Link do youtube:' \
-						0 100 )
-				continuar=$?
-		done
+	case "$GET_DATA_METHOD" in
 
-		if [ -e "$LINKS_FILE" ]; then
-			while utils_videoAlreadyExists "$LINK" "$LINKS_FILE"; do
+		"$GETDATA_STANDARD" )
+			LINK=$( dialog  --stdout \
+				--title 'Dados do vídeo' \
+				--backtitle "$BACK_TITLE" \
+				--inputbox 'Link do youtube:' \
+				0 100 
+			)
+				#adicionar acima para melhorar
+				#--and-widget \
+		       	#--yesno '\nVocê aceita os Termos da Licença?' 8 30
+
+			continuar=$?
+			# enquanto o link digitado já existir
+			# exibir alerta e pedir o link novamente
+			#TODO verificar se é link do you tube
+			#FIXME não está funcionando
+			#FIXME CORRIGIR BUG AO ADICIONAR UM LINK REPETIDO
+			if [ "$continuar" ];then
+				while ! utils_isUTubeLink "$LINK" ; do
 					dialog \
-			        --title "Atenção" \
-			        --backtitle "$BACK_TITLE" \
-			        --msgbox "Esse link já é utilizado" \
-			        5 35
-			        #_getLink
-					LINK=$( dialog  --stdout \
-							--title 'Dados do vídeo' \
-							--backtitle "$BACK_TITLE" \
-							--inputbox 'Link do youtube:' \
-							0 100 )
-					continuar=$?
-			done
-		fi
-	fi
+				        --title "Atenção" \
+				        --backtitle "$BACK_TITLE" \
+				        --msgbox "Esse não é um link do YouTube" \
+				        5 35
+				        #_getLink
+				        LINK=$( dialog  --stdout \
+								--title 'Dados do vídeo' \
+								--backtitle "$BACK_TITLE" \
+								--inputbox 'Link do youtube:' \
+								0 100 )
+						continuar=$?
+				done
+
+				if [ -e "$LINKS_FILE" ]; then
+					while utils_videoAlreadyExists "$LINK" "$LINKS_FILE"; do
+							dialog \
+					        --title "Atenção" \
+					        --backtitle "$BACK_TITLE" \
+					        --msgbox "Esse link já é utilizado" \
+					        5 35
+					        #_getLink
+							LINK=$( dialog  --stdout \
+									--title 'Dados do vídeo' \
+									--backtitle "$BACK_TITLE" \
+									--inputbox 'Link do youtube:' \
+									0 100 )
+							continuar=$?
+					done
+				fi
+			fi
+		;;
+		"$GETDATA_CLIPBOARD_STANDARD")
+			_getClipboardLink
+		;;
+
+		"$GETDATA_CLIPBOARD_FULL")
+			_getDataFromUrl
+		;;
+	esac
+
 
 	case "$continuar" in
 		0) 
