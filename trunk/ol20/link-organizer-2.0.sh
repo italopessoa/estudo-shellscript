@@ -42,6 +42,44 @@ _createGeralLinksFile(){
 	ol_Main "$NAMES_FILE" "$LINKS_FILE" "$VIDEO_SCRIPT"
 }
 
+# menu de configurações
+_configMenu(){
+	res=$( dialog --stdout \
+		--title "Configurações" \
+		--backtitle "$BACK_TITLE" \
+		--menu "Selecione o item para configurar"  \
+		0 0 0  \
+		"Dados" 'Configurar o modo de obtenção dos dados do vídeo' \
+		"Backup" 'Fazer backup sempre que dados forém apagados'
+		)
+
+	case "$res" in
+		"Dados" )
+			res=$( dialog --stdout \
+		--title "Como obter os dados?" \
+		--backtitle "$BACK_TITLE" \
+		--menu "Selecione opção deseja"  \
+		0 0 0  \
+		"Standard" 'Todos os dados serão informados pelo usuário.' \
+		"Easy" 'Os dados serão informados pelo usuário através da área de tranferência.' \
+		"Full" 'Os dados serão obtidos através da url do vídeo, informada pelo usuário através da área de tranferência.'
+		)
+
+		case "$res" in
+			"Standard" )
+				utils_changeGetDaMethod '$GETDATA_STANDARD'
+				;;
+			"Easy" )
+				utils_changeGetDaMethod '$GETDATA_CLIPBOARD_STANDARD'
+				;;
+			"Full" )
+				utils_changeGetDaMethod '$GETDATA_CLIPBOARD_FULL'
+				;;
+		esac
+
+	esac
+}
+
 #exibir menu principal
 linkorganizer_showMenu(){
 	#trap '' SIGHUP SIGINT SIGQUIT SIGTERM SIGSTOP
@@ -58,7 +96,8 @@ linkorganizer_showMenu(){
 		"Listar Vídeos\\ selecionados\\ para\\ download"
 		"Limpar Remover\\ todos\\ os\\ dados\\ CUIDADO"
 		"Download Executar\\ download\\ de\\ todos\\ os\\ vídeos"
-		"Sair Encerrar\\ programa"
+		"Configurações Modificar\\ configurações"
+		"Sair Encerrar\\ programa"s
 	)
 
 	if [ ! -e "$NAMES_FILE" ]; then
@@ -95,7 +134,7 @@ linkorganizer_showMenu(){
            0 0 0 ${menuItems[@]} 
 		)
 
-	if [ "$?" ];then
+	if [ $? -eq 0 ];then
 		case "$res" in
 			"Adicionar" )
 				# adicionar um novo video
@@ -141,10 +180,10 @@ linkorganizer_showMenu(){
 
 						case "$ITEM" in
 							"Padrão" )
-								EXECUTE="$VIDEO_SCRIPT"
+								export EXECUTE="$VIDEO_SCRIPT"
 							;;
 							"Lista" )
-								EXECUTE="$LIST_SCRIPT"
+								export EXECUTE="$LIST_SCRIPT"
 							;;
 							*)
 								linkorganizer_showMenu
@@ -153,18 +192,22 @@ linkorganizer_showMenu(){
 
 					else
 						# se não possuir executar download com o script padrão	
-						EXECUTE="$VIDEO_SCRIPT"
+						export EXECUTE="$VIDEO_SCRIPT"
 					fi
 				# se o arquivo padrão não existir pode existir uma lista
 				else
 					# se existir o arquivo a ser execuado será ele
 					if [ -e "$LIST_SCRIPT" ]; then
-						EXECUTE="$LIST_SCRIPT"
+						export EXECUTE="$LIST_SCRIPT"
 						#exibir msg  informando que os vídeos baixados serão os da lista
 					fi
 				fi
 
 				./"$EXECUTE" 2> /dev/null
+				;;
+			"Configurações")
+				_configMenu
+				linkorganizer_showMenu
 				;;
 			"Sair" )
 

@@ -21,9 +21,12 @@ checkVideos_Main(){
             # verificar se algum video ja foi selecionado
             if [ -e "$SELECTED_VIDEOS" ]; then
                 # caso tenha sido, verificar se não é o mesmo
-                if [ "$(utils_nameAlreadyExists "$item" "$SELECTED_VIDEOS")" = "" ]; then
+                value=$(echo "$item" | sed 's/.mp4\|.flv//')
+                utils_nameAlreadyExists "$value" "$SELECTED_VIDEOS"
+                #echo $? > macumba
+                if [ $? -eq 1 ]; then
                     # caso nao seja, adicionar normalmente
-                    echo $item >> "$SELECTED_VIDEOS"
+                    echo "$item" >> "$SELECTED_VIDEOS"
                     _addVideo2List
                 fi
             else
@@ -43,10 +46,32 @@ _addVideo2List(){
     nl=1
     while read LINHA; do
         # video é a linha do arquivo com o nome do video
-        video=$(echo "$LINHA" | grep -x "[0-9]\{0,\} - @[0-9]\{0,\} $item")
+        # video=$(echo "$LINHA" | grep -x "[0-9]\{0,\} - @[0-9]\{0,\} $item")
+        # remover aplicar regex para substituir [ e ] por \[ \], pois impossibilita a captura do video com regex
+        video=$(echo "$LINHA" | grep -x "[0-9]\{0,\} - @[0-9]\{0,\} $(echo "$item" | sed 's/\[/\\\[/; s/\]/\\\]/')")
+        echo "$LINHA" >> macumba
+        echo "$item" >> macumba
+        # echo "$video" >> macumba  
+        # echo "$LINHA" | grep -x "[0-9]\{0,\} - @[0-9]\{0,\} $item" >> macumba
         if [ "$video" ]; then
             # se o valor nao for nulo significa que a liha foi encontrada
             # e ja pode ser interrompido
+
+            # link correspondente ao video, recuperado a partir da variave $nl
+            # que guarda a linha atual do arquivo, os quais devem estar sincronizados
+            # em relação a disposição dos dados dos videos(nome e link)
+            link=$(sed -n "$nl"p $LINKS_FILE)
+
+            # guardar valores nos arquivos correspondentes a lista de videos para download
+            # caso não exista ainda na lista de video selecionados
+            # echo "$video" > "$macumba"
+            # echo "$link" >> "macumba"
+            echo "$video" >> "$NAMES_LIST"
+            echo "$link" >> "$LINKS_LIST"
+
+            # gerar script para download de videos selecionados
+            ol_Main "$NAMES_LIST" "$LINKS_LIST" "$LIST_SCRIPT"
+
             break;
         else
             # senão a linha deve ser incrementada
@@ -54,16 +79,4 @@ _addVideo2List(){
         fi
     done < nomes.video
 
-    # link correspondente ao video, recuperado a partir da variave $nl
-    # que guarda a linha atual do arquivo, os quais devem estar sincronizados
-    # em relação a disposição dos dados dos videos(nome e link)
-    link=$(sed -n "$nl"p $LINKS_FILE)
-
-    # guardar valores nos arquivos correspondentes a lista de videos para download
-    # caso não exista ainda na lista de video selecionados
-    echo "$video" >> "$NAMES_LIST"
-    echo "$link" >> "$LINKS_LIST"
-
-    # gerar script para download de videos selecionados
-    ol_Main "$NAMES_LIST" "$LINKS_LIST" "$LIST_SCRIPT"
 }
