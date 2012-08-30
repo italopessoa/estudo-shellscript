@@ -5,7 +5,12 @@
 
 # remover todos os arquivos
 getData_clearData(){
-	for fileVar in $NAMES_FILE $LINKS_FILE $LIST_VIDEOS_FILE $AVAILABLE_VIDEO $SELECTED_VIDEOS $NAMES_LIST $LINKS_LIST; do
+
+	if [ "$MAKE_BACKUP" ]; then
+		_dataBackup
+	fi
+
+	for fileVar in $NAMES_FILE $LINKS_FILE $LIST_VIDEOS_FILE $AVAILABLE_VIDEO $SELECTED_VIDEOS $NAMES_LIST $LINKS_LIST $DOWNLOAD_STATUS_LOG; do
 		if [ -e "$fileVar" ]; then
 			rm "$fileVar"
 		fi
@@ -15,6 +20,29 @@ getData_clearData(){
 			rm "$fileVar~"
 		fi
 	done
+}
+
+#TODO verificar se possui bzip2 ou gzip para compactar o backup
+_dataBackup(){
+
+	# filtrar caminho completo do diretorio e armazenar em array
+	dirArray=$(pwd | sed "s/\//\n/g")
+	# diretorio utilizado para armazenar dados
+	localDir=""
+	for dir in ${dirArray[@]} ; do
+		 localDir="$dir"
+	done
+
+	localDir="$localDir"_$(date +%d-%m-%Y_%H-%M-%S)
+	mkdir "$BACKUP_DIR/$localDir"
+	echo "The original path of these files was: $(pwd)" > "$BACKUP_DIR/$localDir/$BACKUP_INF_FILE"
+
+	files=($LIST_VIDEOS_FILE $NAMES_FILE $LINKS_FILE $NAMES_LIST $LINKS_LIST $AVAILABLE_VIDEO $SELECTED_VIDEOS)
+	for file in ${files[@]} ; do
+		cp "$file" "$BACKUP_DIR/$localDir/$file"_$(date +%d-%m-%Y_%H-%M-%S).$RANDOM
+	done
+
+# date +%d-%m-%Y_%H-%M-%S
 }
 
 # criar arquivos necessarios para armazenar e gerenciar videos

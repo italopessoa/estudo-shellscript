@@ -27,7 +27,10 @@ export GETDATA_CLIPBOARD_STANDARD="standard-clipboard"
 export GETDATA_CLIPBOARD_FULL="full-clipboard"
 export GETDATA_STANDARD="standard"
 export GET_DATA_METHOD="$GETDATA_CLIPBOARD_FULL"
-
+export CONFIG_DIR="$HOME/.config/linkOrganizer/settings"
+export BACKUP_DIR="$HOME/.linkOrganizer/data/backup"
+export MAKE_BACKUP="yes"
+export BACKUP_INF_FILE="README"
 # scripts utilizados
 # centralizadosscripts  variaveis para que possam ser utilizados em qualquer  diretorio
 export LINK_ORGANIZER_SCRIPT="link-organizer-2.0.sh"
