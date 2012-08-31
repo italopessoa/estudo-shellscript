@@ -12,6 +12,26 @@
 # Italo Pessoa, Fevereiro de 2012 - ol_1.0.0.sh
 # Italo Pessoa, Fevereiro de 2012 - ol_1.1.0.sh
 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# LinkOrganizer is a simple software to organize links.                     #
+#                                                                           #
+# Copyright (C) 2010  Italo Pessoa<italoneypessoa@gmail.com>                #
+# This file is part of the program LinkOrganizer.                           #
+#                                                                           #
+# LinkOrganizer is a free software: you can redistribute it and/or modify   #
+# it under the terms of the GNU General Public License as published by      #
+# the Free Software Foundation, either version 3 of the License, or         #
+# (at your option) any later version.                                       #
+#                                                                           #
+# This program is distributed in the hope that it will be useful,           #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of            #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             #
+# GNU General Public License for more details.                              #
+#                                                                           #
+# You should have received a copy of the GNU General Public License         #
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.     #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
 ALERT=$(which 'notify-send'); # aplicativo para alerta
 
 # corrigir arquivo para que os downloads sejam executados em background e possam ser
@@ -89,6 +109,7 @@ _createLinksFile(){
     echo '' >> "$SCRIPTOUT"
 
     echo "source $DOWNLOAD_PROCESS_SCRIPT" >> "$SCRIPTOUT"
+    echo "source $LINK_ORGANIZER_SCRIPT" >> "$SCRIPTOUT"
     echo "_showProgress(){" >> "$SCRIPTOUT"
     echo "  # monitorar status download" >> "$SCRIPTOUT"
     echo "  downloadProcess_Show \$!" >> "$SCRIPTOUT"
@@ -107,6 +128,7 @@ _createLinksFile(){
     sed 's/.http/ http/ ; s/(/\\(/g ; s/)/\\)/g' file >> "$SCRIPTOUT"
     
     _insertBackgroundProcesses
+    
     #sed 's/\\ http/ http/' tmp > result # remover ultima barra e envia para result
     #echo "clear" >> "$SCRIPTOUT"
     #cat links.sh | sed 's/(/\\(/g ; s/)/\\)/g' > tmp
@@ -115,7 +137,6 @@ _createLinksFile(){
     #echo "#GERADO POR ITALO NEY - italoneypessoa@gmail.com" >> "$SCRIPTOUT"
     rm teste tmp teste2 result file
     chmod +x "$SCRIPTOUT"
-
     if [ ! -z $ALERT ]; then
         $ALERT -u critical "Sucesso!" "Arquivo '$SCRIPTOUT' criado.";
         utils_showInfoMessage "Sucesso!" "\nArquivo '$SCRIPTOUT' criado.";

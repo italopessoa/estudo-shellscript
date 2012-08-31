@@ -3,6 +3,27 @@
 # script para capturar os dados dos videos
 # "Italo Pessoa" <italoneypessoa@gmail.com>
 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# LinkOrganizer is a simple software to organize links.						#
+#																			#
+# Copyright (C) 2010  Italo Pessoa<italoneypessoa@gmail.com>				#
+# This file is part of the program LinkOrganizer. 							#
+#																			#
+# LinkOrganizer is a free software: you can redistribute it and/or modify	#
+# it under the terms of the GNU General Public License as published by		#
+# the Free Software Foundation, either version 3 of the License, or 		#
+# (at your option) any later version.										#
+#																			#
+# This program is distributed in the hope that it will be useful,			#
+# but WITHOUT ANY WARRANTY; without even the implied warranty of 			#
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 		 	#
+# GNU General Public License for more details. 								#
+#																			#
+# You should have received a copy of the GNU General Public License 		#
+# along with this program.  If not, see <http://www.gnu.org/licenses/>. 	#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+
 # remover todos os arquivos
 getData_clearData(){
 
@@ -33,16 +54,23 @@ _dataBackup(){
 		 localDir="$dir"
 	done
 
-	localDir="$localDir"_$(date +%d-%m-%Y_%H-%M-%S)
+	localDir="$localDir" #_$(date +%d-%m-%Y_%H-%M-%S)
+	data_hora_random=$(date +%d-%m-%Y_%H-%M-%S).$RANDOM
 	mkdir "$BACKUP_DIR/$localDir"
 	echo "The original path of these files was: $(pwd)" > "$BACKUP_DIR/$localDir/$BACKUP_INF_FILE"
 
 	files=($LIST_VIDEOS_FILE $NAMES_FILE $LINKS_FILE $NAMES_LIST $LINKS_LIST $AVAILABLE_VIDEO $SELECTED_VIDEOS)
 	for file in ${files[@]} ; do
-		cp "$file" "$BACKUP_DIR/$localDir/$file"_$(date +%d-%m-%Y_%H-%M-%S).$RANDOM
+		# cp "$file" "$BACKUP_DIR/$localDir/$file"_$(date +%d-%m-%Y_%H-%M-%S).$RANDOM
+		cp "$file" "$BACKUP_DIR/$localDir/$file"
 	done
-
-# date +%d-%m-%Y_%H-%M-%S
+	
+	atualDir=$(pwd)
+	cd "$BACKUP_DIR"
+	tar -cf "$localDir""_$data_hora_random.tar" "$localDir"
+	gzip "$localDir""_$data_hora_random.tar"
+	rm -rf "$localDir"
+	cd "$atualDir"
 }
 
 # criar arquivos necessarios para armazenar e gerenciar videos
