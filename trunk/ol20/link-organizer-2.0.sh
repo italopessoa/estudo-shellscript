@@ -4,6 +4,27 @@
 # ol-1.1.0, para organizacao dos videos para download
 # "Italo Pessoa" <italoneypessoa@gmail.com>
 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# LinkOrganizer is a simple software to organize links.						#
+#																			#
+# Copyright (C) 2010  Italo Pessoa<italoneypessoa@gmail.com>				#
+# This file is part of the program LinkOrganizer. 							#
+#																			#
+# LinkOrganizer is a free software: you can redistribute it and/or modify	#
+# it under the terms of the GNU General Public License as published by		#
+# the Free Software Foundation, either version 3 of the License, or 		#
+# (at your option) any later version.										#
+#																			#
+# This program is distributed in the hope that it will be useful,			#
+# but WITHOUT ANY WARRANTY; without even the implied warranty of 			#
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 		 	#
+# GNU General Public License for more details. 								#
+#																			#
+# You should have received a copy of the GNU General Public License 		#
+# along with this program.  If not, see <http://www.gnu.org/licenses/>. 	#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+
 #trap '' SIGHUP SIGINT SIGQUIT SIGTERM SIGSTOP 255
 
 # exibir videos adicionados na lista
@@ -56,28 +77,46 @@ _configMenu(){
 	case "$res" in
 		"Dados" )
 			res=$( dialog --stdout \
-		--title "Como obter os dados?" \
-		--backtitle "$BACK_TITLE" \
-		--menu "Selecione opção deseja"  \
-		0 0 0  \
-		"Standard" 'Todos os dados serão informados pelo usuário.' \
-		"Easy" 'Os dados serão informados pelo usuário através da área de tranferência.' \
-		"Full" 'Os dados serão obtidos através da url do vídeo, informada pelo usuário através da área de tranferência.'
-		)
+				--title "Como obter os dados?" \
+				--backtitle "$BACK_TITLE" \
+				--menu "Selecione opção deseja"  \
+				0 0 0  \
+				"Standard" 'Todos os dados serão informados pelo usuário.' \
+				"Easy" 'Os dados serão informados pelo usuário através da área de tranferência.' \
+				"Full" 'Os dados serão obtidos através da url do vídeo, informada pelo usuário através da área de tranferência.'
+				)
 
-		case "$res" in
-			"Standard" )
-				utils_changeGetDaMethod '$GETDATA_STANDARD'
-				;;
-			"Easy" )
-				utils_changeGetDaMethod '$GETDATA_CLIPBOARD_STANDARD'
-				;;
-			"Full" )
-				utils_changeGetDaMethod '$GETDATA_CLIPBOARD_FULL'
-				;;
-		esac
-
+			case "$res" in
+				"Standard" )
+					utils_changeGetDaMethod "$GETDATA_STANDARD"
+					;;
+				"Easy" )
+					utils_changeGetDaMethod "$GETDATA_CLIPBOARD_STANDARD"
+					;;
+				"Full" )
+					utils_changeGetDaMethod "$GETDATA_CLIPBOARD_FULL"
+					;;
+			esac
+		;;
+		
+		"Backup")
+			dialog  \
+				--title "Backup" \
+				--backtitle "$BACK_TITLE" \
+				--yesno "Deseja que o backup dos dados seja feito ao limpar as informaçes atuais?"  \
+				5 76
+			
+			case "$?" in
+				"0" )
+					utils_changeMakeBackup "0"
+					;;
+				"1" )
+					utils_changeMakeBackup "1"
+					;;
+			esac
+			;;
 	esac
+	source "$SETTINGS"	
 }
 
 #exibir menu principal
