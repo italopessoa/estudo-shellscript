@@ -145,5 +145,5 @@ _addVideo2List(){
             # senão a linha deve ser incrementada
             nl=$(( nl +1 ))
         fi
-    done < nomes.video
+    done < "$NAMES_FILE"
 }
