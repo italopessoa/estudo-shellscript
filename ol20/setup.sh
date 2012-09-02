@@ -28,7 +28,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
-export DIALOGRC=~/Documentos/shell-script/estudo-sehllscript/tema-verde.cfg
+# export DIALOGRC=~/Documentos/shell-script/estudo-sehllscript/tema-verde.cfg
 export BACK_TITLE="Organizador de Links - 2.0 BETA"
 
 # arquivos utilizados pelo script
@@ -42,6 +42,7 @@ export NAMES_LIST=".nomes.list"
 export LINKS_LIST=".links.list"
 export AVAILABLE_VIDEO=".available"
 export SELECTED_VIDEOS=".selected_videos"
+export ONE_VIDEO_DOWNLOAD=".one.sh"
 export DOWNLOAD_STATUS_LOG=".download_status.log"
 export PROCESS_KILL=""
 export GETDATA_CLIPBOARD_STANDARD="standard-clipboard"
@@ -77,4 +78,4 @@ source "$SETTINGS"
 
 
 # exibir menu principal
- linkorganizer_showMenu
+linkorganizer_showMenu

@@ -31,7 +31,7 @@ dialog \
         --backtitle "$BACK_TITLE" \
         --sleep "5" \
         --infobox "Coletando informações do vídeo"  \
-        10 40
+        3 40
 
 fmtList=("1080" "720" "480" "360" "240")
 STRING="<meta property=\"og:video:height"

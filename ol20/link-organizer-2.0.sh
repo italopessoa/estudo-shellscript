@@ -204,50 +204,66 @@ linkorganizer_showMenu(){
 				# executar script para download dos videos
 				#./"$VIDEO_SCRIPT" 2> /dev/null
 				#$LIST_SCRIPT
-
-				#se o arquivo padrão existir
-				if [ -e "$VIDEO_SCRIPT" ]; then
-					# verificar se possui a lista de videos personalizada
-					if [ -e "$LIST_SCRIPT" ]; then
-						# se possuir exibir msg informando que pode escolher os vídeos que serão baixados
-						ITEM=$( dialog --stdout \
+				OPCAO=$( dialog --stdout \
 								--title 'Selecione' \
-								--radiolist 'Quais vídeos deseja baixar?'  \
+								--radiolist 'Opção de download'  \
 								0 0 0  \
-								Padrão  'Todos os vídeos'      on  \
-								Lista 'Vídeos Selecionados'  off ) 
+								Todos  'Baixar todos os vídeos'      on  \
+								Selecionar 'Baixar um único vídeo'  off )
 
-						case "$ITEM" in
-							"Padrão" )
+				EXECUTE=""
+				case "$OPCAO" in
+					"Todos" )
+						#se o arquivo padrão existir
+						if [ -e "$VIDEO_SCRIPT" ]; then
+							# verificar se possui a lista de videos personalizada
+							if [ -e "$LIST_SCRIPT" ]; then
+								# se possuir exibir msg informando que pode escolher os vídeos que serão baixados
+								ITEM=$( dialog --stdout \
+										--title 'Selecione' \
+										--radiolist 'Quais vídeos deseja baixar?'  \
+										0 0 0  \
+										Padrão  'Todos os vídeos'      on  \
+										Lista 'Vídeos Selecionados'  off ) 
+
+								case "$ITEM" in
+									"Padrão" )
+										export EXECUTE="$VIDEO_SCRIPT"
+									;;
+									"Lista" )
+										export EXECUTE="$LIST_SCRIPT"
+									;;
+									*)
+										linkorganizer_showMenu
+									;;
+								esac
+
+							else
+								# se não possuir executar download com o script padrão	
 								export EXECUTE="$VIDEO_SCRIPT"
-							;;
-							"Lista" )
+							fi
+						# se o arquivo padrão não existir pode existir uma lista
+						else
+							# se existir o arquivo a ser execuado será ele
+							if [ -e "$LIST_SCRIPT" ]; then
 								export EXECUTE="$LIST_SCRIPT"
-							;;
-							*)
-								linkorganizer_showMenu
-							;;
-						esac
-
-					else
-						# se não possuir executar download com o script padrão	
-						export EXECUTE="$VIDEO_SCRIPT"
-					fi
-				# se o arquivo padrão não existir pode existir uma lista
-				else
-					# se existir o arquivo a ser execuado será ele
-					if [ -e "$LIST_SCRIPT" ]; then
-						export EXECUTE="$LIST_SCRIPT"
-						#exibir msg  informando que os vídeos baixados serão os da lista
-					fi
-				fi
-
+								#exibir msg  informando que os vídeos baixados serão os da lista
+							fi
+						fi
+						;;
+					"Selecionar" )
+						checkVideos_OneVideo
+						export EXECUTE="$ONE_VIDEO_DOWNLOAD"
+						;;
+				esac
 				./"$EXECUTE" 2> /dev/null
 				;;
+
 			"Configurações")
 				_configMenu
 				linkorganizer_showMenu
 				;;
+
 			"Sair" )
 
 				vet=($PROCESS_KILL)
@@ -261,8 +277,8 @@ linkorganizer_showMenu(){
 				#p=$(top -b -n1 | grep bash | cut -d' ' -f1)
 				#kill -9 $$
 				clear
-				#killall "$VIDEO_SCRIPT"
-				killall "$EXECUTE"
+				killall "$VIDEO_SCRIPT"
+				test ! "$1" && killall "$EXECUTE"
 				clear
 				exit 0;
 				;;
@@ -282,8 +298,8 @@ linkorganizer_showMenu(){
 		#p=$(top -b -n1 | grep bash | cut -d' ' -f1)
 		#kill -9 $$
 		clear
-		#killall "$VIDEO_SCRIPT"
-		killall "$EXECUTE"
+		# killall "$VIDEO_SCRIPT"
+		test ! "$1" && killall "$EXECUTE"
 		clear
 		exit 1;
 	fi
