@@ -28,7 +28,7 @@ checkVideos_Main(){
 	# recuperar valores selecionados
     items=$( eval \ dialog --stdout --separate-output \
         --title \"Vídeos cadastrados\" \
-        --checklist \"Selecione o vídeos para download\" \
+        --checklist \"Selecione so vídeos para download\" \
         0 0 0 $(cat $AVAILABLE_VIDEO) 
     )
     
@@ -61,7 +61,54 @@ checkVideos_Main(){
     linkorganizer_showMenu
 }
 
-#funcao para unifica o processo de bbuscar e adicionar o video à lista personlaizada
+checkVideos_OneVideo(){
+    # recuperar valores selecionados
+    item=$( eval \ dialog --stdout \
+        --title \"Vídeos cadastrados\" \
+        --radiolist \"Selecione o vídeo para download\" \
+        0 0 0 $(cat $AVAILABLE_VIDEO) 
+    )
+
+    # linha=$(grep -c "$item" "$NAMES_FILE")
+
+    x=1
+    item=$(echo "$item" | sed 's/\[/\\[/; s/\]/\\]/')
+    while read linha; do
+        test "$(echo "$linha" | grep "$item")" && break;
+        ((x++))
+    done < "$NAMES_FILE"
+
+    linkTmp=$(sed "$x !d" "$LINKS_FILE" | cut -d' ' -f2)
+    downloadCommand=$(grep "$linkTmp" "$VIDEO_SCRIPT")
+    
+    #escrever script para download
+    echo '#!/bin/bash' > "$ONE_VIDEO_DOWNLOAD"
+    echo '' >> "$ONE_VIDEO_DOWNLOAD"
+    echo '#script para fazer download dos vídeos' >> "$ONE_VIDEO_DOWNLOAD"
+    echo '' >> "$ONE_VIDEO_DOWNLOAD"
+    echo "source $DOWNLOAD_PROCESS_SCRIPT" >> "$ONE_VIDEO_DOWNLOAD"
+    echo "source $LINK_ORGANIZER_SCRIPT" >> "$ONE_VIDEO_DOWNLOAD"
+    echo "_showProgress(){" >> "$ONE_VIDEO_DOWNLOAD"
+    echo "  # monitorar status download" >> "$ONE_VIDEO_DOWNLOAD"
+    echo "  downloadProcess_Show \$!" >> "$ONE_VIDEO_DOWNLOAD"
+    echo "  # verificar se o download foi conluido com interrupcao" >> "$ONE_VIDEO_DOWNLOAD"
+    echo "  if [ \"\$?\" != \"0\" ];then" >> "$ONE_VIDEO_DOWNLOAD"
+    echo "      ./setup.sh" >> "$ONE_VIDEO_DOWNLOAD"
+    #echo "      echo \$\$" >> "$ONE_VIDEO_DOWNLOAD"
+    echo "      killall \$\$" >> "$ONE_VIDEO_DOWNLOAD"
+    echo "  fi" >> "$ONE_VIDEO_DOWNLOAD"
+    echo "}" >> "$ONE_VIDEO_DOWNLOAD"
+    echo "" >>"$ONE_VIDEO_DOWNLOAD"
+
+    echo "$downloadCommand" >>"$ONE_VIDEO_DOWNLOAD"
+    echo "_showProgress" >> "$ONE_VIDEO_DOWNLOAD"
+    echo "linkorganizer_showMenu \"0\"" >> "$ONE_VIDEO_DOWNLOAD"
+
+    # sed -i ':a;$!{N;ba;};s/\(.*\)s/\1s \"0\"/' "$ONE_VIDEO_DOWNLOAD"
+    chmod +x "$ONE_VIDEO_DOWNLOAD"
+}
+
+#funcao para unificar o processo de bbuscar e adicionar o video à lista personlaizada
 _addVideo2List(){
     # variavel que armazenara a linha atual que comeca na linha 1 claro
     nl=1
@@ -99,5 +146,4 @@ _addVideo2List(){
             nl=$(( nl +1 ))
         fi
     done < nomes.video
-
 }

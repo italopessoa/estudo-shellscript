@@ -38,10 +38,11 @@ ALERT=$(which 'notify-send'); # aplicativo para alerta
 # monitorados pelo gauge
 _insertBackgroundProcesses(){
     while read linha; do
-        video=$(echo "$linha" | sed 's/[\\\/\\]//g' |  grep "www.youtube.com" )
+        # video=$(echo "$linha" | sed 's/[\\\/\\]//g' |  grep "www.youtube.com" )
+        video=$(echo "$linha"| grep "www.youtube.com" )
         cdVideo=$(echo $video | grep -o "\=.*" | sed -e 's/=//')
         if [ ! -z "$video" ]; then
-            echo $cdVideo
+            #echo $cdVideo
             #echo "$linha &"
             cdVideoBck="$cdVideo \\&"
             sed -i "s|$cdVideo|$cdVideo > \"\$DOWNLOAD_STATUS_LOG\" \\&|g"  "$SCRIPTOUT"
@@ -73,6 +74,22 @@ _createLinksFile(){
                     echo "_showProgress" >> file
             fi
     done < teste
+
+    #########################################################
+    # SOLUCAO MAIS SIMPLES
+    # TODO verificar melhor, pois apresenou alguns prolemas mais na frente, quando por exemplo, o video
+    # contém []
+    # sed  -i 's/.\{0,\}@[0-9]\{0,\} /youtube-dl -o /' file
+
+    # while read linha; do
+    #     valor=$(echo "$linha" | cut -d' ' -f3- | grep -o '.*\.flv\|.*\.mp4')
+    #     echo "$valor" >> valores
+    #     #TODO sed: -e expressão #1, caractere 0: não há expressão regular anterior
+    #     sed -i "s/$valor/\"$valor\"/" file 2> /dev/null
+    # done < file
+    ###########################################################
+
+
 
     #remover numeracao de linahs e numeração do vídeo
     #sed 's/.\{0,\}@/%r%/' file > abc
@@ -129,20 +146,21 @@ _createLinksFile(){
     
     _insertBackgroundProcesses
     
+    echo "linkorganizer_showMenu \"0\"" >> "$SCRIPTOUT"
     #sed 's/\\ http/ http/' tmp > result # remover ultima barra e envia para result
     #echo "clear" >> "$SCRIPTOUT"
     #cat links.sh | sed 's/(/\\(/g ; s/)/\\)/g' > tmp
 
     #echo "echo \"------------------FIM---------------------------------\"" >> "$SCRIPTOUT"
     #echo "#GERADO POR ITALO NEY - italoneypessoa@gmail.com" >> "$SCRIPTOUT"
-    rm teste tmp teste2 result file
+     rm teste tmp teste2 result file 2> /dev/null
     chmod +x "$SCRIPTOUT"
     if [ ! -z $ALERT ]; then
         $ALERT -u critical "Sucesso!" "Arquivo '$SCRIPTOUT' criado.";
         utils_showInfoMessage "Sucesso!" "\nArquivo '$SCRIPTOUT' criado.";
         #exit 0;
     else
-        echo "Sucesso!\nArquivo '$SCRIPTOUT' criado.";
+        echo "Sucesso!\nArquivo '$SCRIPTOUT' criado." > /dev/null
         #exit 0;
     fi
 }
