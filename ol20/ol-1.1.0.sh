@@ -92,31 +92,23 @@ _createLinksFile(){
 
 
     #remover numeracao de linahs e numeração do vídeo
-    #sed 's/.\{0,\}@/%r%/' file > abc
-    #sed 's/.\{0,\}@[0-9]\{0,\} /%r%/' file > tmp
     sed  -i 's/.\{0,\}@[0-9]\{0,\} /%r%/' file
 
     #mudar espaços por valor aleatório expecífico
-    #sed 's/ /@123/g' tmp > teste
     sed -i 's/ /@123/g' file
 
     #modificar valor aleatório expecífico por 'vazio'
-    #sed 's/@123/\\ /g' teste > teste2
     sed -i 's/@123/\\ /g' file
 
     # remover '\' o final do link por vazio
-    # TODO adicinaor -i em todos os sed
-    #sed -i 's/\\ -f/ -f/' teste2
     sed -i 's/\\ -f/ -f/' file
 
     #remover '/' antes de http | www | youtube.com
-    #sed 's/\\ http/ http/' teste2 > teste
     sed -i 's/\\ http/ http/' file
     sed -i 's/\\ www/ www/' file
     sed -i 's/\\ youtube.com/ youtube.com/' file
 
     #substituir valor aleatório controlado pelo comando
-    #sed 's/%r%/youtube-dl -o /' teste2 > result
     sed -i 's/%r%/youtube-dl -o /' file
 
     #escrever script para download
@@ -133,35 +125,23 @@ _createLinksFile(){
     echo "  # vericiar se o download foi conluido com interrupcao" >> "$SCRIPTOUT"
     echo "  if [ \"\$?\" != \"0\" ];then" >> "$SCRIPTOUT"
     echo "      ./setup.sh" >> "$SCRIPTOUT"
-    #echo "      echo \$\$" >> "$SCRIPTOUT"
     echo "      killall \$\$" >> "$SCRIPTOUT"
     echo "  fi" >> "$SCRIPTOUT"
     echo "}" >> "$SCRIPTOUT"
     echo "" >>"$SCRIPTOUT"
 
     #remover ultima barra e envia para result,tratar parenteses
-    #sed 's/..http/ http/ ; s/(/\\(/g ; s/)/\\)/g' result >> "$SCRIPTOUT"
-    #sed 's/..http/ http/ ; s/(/\\(/g ; s/)/\\)/g' file >> "$SCRIPTOUT"
     sed 's/.http/ http/ ; s/(/\\(/g ; s/)/\\)/g' file >> "$SCRIPTOUT"
     
     _insertBackgroundProcesses
     
     echo "linkorganizer_showMenu \"0\"" >> "$SCRIPTOUT"
-    #sed 's/\\ http/ http/' tmp > result # remover ultima barra e envia para result
-    #echo "clear" >> "$SCRIPTOUT"
-    #cat links.sh | sed 's/(/\\(/g ; s/)/\\)/g' > tmp
-
-    #echo "echo \"------------------FIM---------------------------------\"" >> "$SCRIPTOUT"
-    #echo "#GERADO POR ITALO NEY - italoneypessoa@gmail.com" >> "$SCRIPTOUT"
-     rm teste tmp teste2 result file 2> /dev/null
+    rm teste tmp teste2 result file 2> /dev/null
     chmod +x "$SCRIPTOUT"
     if [ ! -z $ALERT ]; then
-        $ALERT -u critical "Sucesso!" "Arquivo '$SCRIPTOUT' criado.";
-        utils_showInfoMessage "Sucesso!" "\nArquivo '$SCRIPTOUT' criado.";
-        #exit 0;
+        $ALERT -u critical "Sucesso!" "Lista de vídeos atualizada.";
     else
-        echo "Sucesso!\nArquivo '$SCRIPTOUT' criado." > /dev/null
-        #exit 0;
+        utils_showInfoMessage "Sucesso!" "Lista de vídeos atualizada.";
     fi
 }
 
@@ -193,5 +173,3 @@ ol_Main(){
 
     _createLinksFile
 }
-
-#exit 0;

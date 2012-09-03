@@ -4,34 +4,34 @@
 # "Italo Pessoa" <italoneypessoa@gmail.com>
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# LinkOrganizer is a simple software to organize links.						#
-#																			#
-# Copyright (C) 2010  Italo Pessoa<italoneypessoa@gmail.com>				#
-# This file is part of the program LinkOrganizer. 							#
-#																			#
-# LinkOrganizer is a free software: you can redistribute it and/or modify	#
-# it under the terms of the GNU General Public License as published by		#
-# the Free Software Foundation, either version 3 of the License, or 		#
-# (at your option) any later version.										#
-#																			#
-# This program is distributed in the hope that it will be useful,			#
-# but WITHOUT ANY WARRANTY; without even the implied warranty of 			#
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 		 	#
-# GNU General Public License for more details. 								#
-#																			#
-# You should have received a copy of the GNU General Public License 		#
-# along with this program.  If not, see <http://www.gnu.org/licenses/>. 	#
+# LinkOrganizer is a simple software to organize links.                     #
+#                                                                           #
+# Copyright (C) 2010  Italo Pessoa<italoneypessoa@gmail.com>                #
+# This file is part of the program LinkOrganizer.                           #
+#                                                                           #
+# LinkOrganizer is a free software: you can redistribute it and/or modify   #
+# it under the terms of the GNU General Public License as published by      #
+# the Free Software Foundation, either version 3 of the License, or         #
+# (at your option) any later version.                                       #
+#                                                                           #
+# This program is distributed in the hope that it will be useful,           #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of            #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             #
+# GNU General Public License for more details.                              #
+#                                                                           #
+# You should have received a copy of the GNU General Public License         #
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.     #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
 # remover todos os arquivos
 getData_clearData(){
-
+	# verificar se deve ser feito o backup
 	if [ "$MAKE_BACKUP" ]; then
 		_dataBackup
 	fi
 
-	for fileVar in $NAMES_FILE $LINKS_FILE $LIST_VIDEOS_FILE $AVAILABLE_VIDEO $SELECTED_VIDEOS $NAMES_LIST $LINKS_LIST $DOWNLOAD_STATUS_LOG; do
+	for fileVar in $NAMES_FILE $LINKS_FILE $LIST_VIDEOS_FILE $AVAILABLE_VIDEO $SELECTED_VIDEOS $NAMES_LIST $LINKS_LIST $DOWNLOAD_STATUS_LOG $ONE_VIDEO_DOWNLOAD; do
 		if [ -e "$fileVar" ]; then
 			rm "$fileVar"
 		fi
@@ -54,14 +54,13 @@ _dataBackup(){
 		 localDir="$dir"
 	done
 
-	localDir="$localDir" #_$(date +%d-%m-%Y_%H-%M-%S)
+	localDir="$localDir"
 	data_hora_random=$(date +%d-%m-%Y_%H-%M-%S).$RANDOM
 	mkdir "$BACKUP_DIR/$localDir"
 	echo "The original path of these files was: $(pwd)" > "$BACKUP_DIR/$localDir/$BACKUP_INF_FILE"
 
 	files=($LIST_VIDEOS_FILE $NAMES_FILE $LINKS_FILE $NAMES_LIST $LINKS_LIST $AVAILABLE_VIDEO $SELECTED_VIDEOS)
 	for file in ${files[@]} ; do
-		# cp "$file" "$BACKUP_DIR/$localDir/$file"_$(date +%d-%m-%Y_%H-%M-%S).$RANDOM
 		cp "$file" "$BACKUP_DIR/$localDir/$file"
 	done
 	
@@ -95,80 +94,27 @@ _sendNameForFile(){
 _sendLinkForFile(){
 	number=$(wc -l $LINKS_FILE | cut -d' ' -f1)
 	number=$(( $number +1 ))
-	#youtubeLink=$(utils_youtubeRegex $1)
 	echo "$number $1" >> $LINKS_FILE
 }
 
 # remover video do arquiov de links e nomes
 _removeVideoOfFile(){
 	linha=$(wc -l "$LIST_VIDEOS_FILE" | cut -d' ' -f1)
-	echo "linha" >fff
 	sed -i "$linha"d $NAMES_FILE
 	sed -i "$linha"d $AVAILABLE_VIDEO
 	sed -i "$linha"d $LIST_VIDEOS_FILE
 	sed -i "$linha"d $LINKS_FILE
 }
 
-
-
-#TODO verificar se o titulo ja nao foi utilizado
-#TODO um link nao pode ser o titulo do video
-#TODO na parte do link fazer a verificaçao se é realmente um link do youtube válido
-# _validTitle(){
-	
-# 	# se estiver utilizando o copiar, fazer esse teste
-# 	if [ "$VAR" ]; then
-# 		while [ "$TITULO" == "None" ] || [ ! "$TITULO" ]; do
-# 			#verificar se está utilizando o script de copiar para exibir msg diferente
-# 			utils_showInfoMessage "Valor não válido" "Cópie o  titulo novamente"
-# 			#_validTitle
-# 			dialog --title "Copie o texto desejado" --msgbox "Ao copiar selecione a opcao para recuperar os dados" 5 70
-# 			TITULO=$(python get-clipboard.py)
-# 			_validTitle
-# 		done
-# 	fi
-
-# 	if [ -e "$LIST_VIDEOS_FILE" ]; then
-# 		echo "$TITULO" > macumba
-# 		while utils_nameAlreadyExists "$TITULO" "$LIST_VIDEOS_FILE"; do
-# 			dialog \
-# 		    --title "Atenção" \
-# 		    --backtitle "$BACK_TITLE" \
-# 		    --msgbox "Esse nome já é utilizado"  \
-# 		    5 35
-
-# 		    # if nao estiver utilizadno o copiar, pedir novamente o titulo
-# 		    if [ "$VAR" ]; then
-# 		    	dialog --title "Copie o texto desejado" --msgbox "Ao copiar selecione a opcao para recuperar os dados" 5 70
-# 				TITULO=$(python get-clipboard.py)
-# 				_validTitle
-# 		    else
-# 		    	TITULO=$( dialog  --stdout \
-# 					--title 'Dados do vídeo' \
-# 					--backtitle "$BACK_TITLE" \
-# 					--inputbox 'Título do vídeo:' \
-# 					0 100 )
-# 				continuar=$?
-# 		    fi
-# 		done
-# 	fi
-# }
-
-#testando
 # mensagem de sucesso ao adicionar um novo video
 _sucess(){
 	dialog \
-		--title "Vídeo adicionado a lista de downloads - [Esc] para parar."\
+		--title "Vídeo adicionado a lista de downloads."\
 		--backtitle "$BACK_TITLE" \
 		--yesno "$@\nEste arquivo deve permanecer?"  \
 		0 0 
 
-	if [ "$?" -eq "1" ]; then
-		# remover video do arquivo de links e nomes
-		#_removeVideoOfFile
-		#nao fazer nada
-		echo "x" >/dev/null
-	else
+	if [ "$?" -eq "0" ]; then
 		# criar arquivos necessarios para armazenar e gerenciar videos
 		if [ ! -e "$NAMES_FILE" ]; then
 			_createFiles
@@ -182,6 +128,8 @@ _sucess(){
 		ol_Main "$NAMES_FILE" "$LINKS_FILE" "$VIDEO_SCRIPT"
 	fi
 
+	# caso o modo de captura seja full, exibir opcao de cancelamento 
+	# da obtencao dos dados
 	if [ ! "$GET_DATA_METHOD" = "$GETDATA_STANDARD" ]; then
 		dialog \
 		--title "Essa configuração não possui opção de cancelamento."\
@@ -198,6 +146,7 @@ _sucess(){
 #TODO verificar se o titulo ja nao foi utilizado
 #TODO um link nao pode ser o titulo do video
 #TODO na parte do link fazer a verificaçao se é realmente um link do youtube válido
+# validar o titulo capturado da area de tranferencia(clipboard)
 _validClipboardTitle(){
 	
 	# se estiver utilizando o copiar, fazer esse teste
@@ -215,7 +164,6 @@ _validClipboardTitle(){
 		    --msgbox "Esse nome já é utilizado"  \
 		    5 35
 
-	    	#dialog --title "Copie o texto desejado" --msgbox "Ao copiar selecione a opcao para recuperar os dados" 5 70
 	    	continuar=$?
 			if [ $continuar -eq 0 ]; then
 				getClipboardTitle
@@ -224,6 +172,7 @@ _validClipboardTitle(){
 	fi
 }
 
+# validar o link capturado da area de tranferencia(clipboard)
 _validClipboardLink(){
 	while ! utils_isUTubeLink "$LINK" ; do
 		dialog \
@@ -253,8 +202,13 @@ _validClipboardLink(){
 	fi
 }
 
+# recuperar titulo da area de transferencia(clipboard)
 _getClipboardTitle(){
-	dialog --title "Copie o texto desejado" --msgbox "Ao copiar selecione a opção para recuperar os dados" 5 70
+	dialog \
+	--title "Copie o texto desejado" \
+	--backtitle "$BACK_TITLE" \
+	--msgbox "Ao copiar selecione a opção para recuperar os dados" \
+	5 70
 	continuar=$?
 	if [ $continuar -eq 0 ]; then
 		TITULO=$(python get-clipboard.py)
@@ -262,16 +216,26 @@ _getClipboardTitle(){
 	fi
 }
 
+# recuperar link da area de transferencia(clipboard)
 _getClipboardLink(){
-	dialog --title "Copie o link desejado" --msgbox "Ao copiar selecione a opção para recuperar os dados" 5 70
+	dialog \
+	--title "Copie o link desejado" \
+	--backtitle "$BACK_TITLE" \
+	--msgbox "Ao copiar selecione a opção para recuperar os dados" \
+	5 70
 	LINK=$(python get-clipboard.py)
 	_validClipboardLink
 }
 
+#recuperar dados do video utilizando a url do vídeo
 _getDataFromUrl(){
 	
-	dialog --title "Copie o link desejado" --msgbox "Ao copiar selecione a opção para recuperar os dados.
-	 \nAguarde o processamento dos dados." 6 70
+	dialog \
+		--title "Copie o link desejado" \
+		--backtitle "$BACK_TITLE" \
+		--msgbox "Ao copiar selecione a opção para recuperar os dados.
+	 	\nAguarde o processamento dos dados." \
+	 6 70
 
 	LINK=$(python get-clipboard.py)
 	while ! utils_isUTubeLink "$LINK" ; do
@@ -281,8 +245,13 @@ _getDataFromUrl(){
 	        --msgbox "Esse não é um link do YouTube" \
 	        5 35
 
-		dialog --title "Copie o link desejado" --msgbox "Ao copiar selecione a opção para recuperar os dados.
-		 \nAguarde o processamento dos dados." 6 70
+		dialog \
+			--title "Copie o link desejado" \
+			--backtitle "$BACK_TITLE" \
+			--msgbox "Ao copiar selecione a opção para recuperar os dados.
+	 		\nAguarde o processamento dos dados." \
+	 		6 70
+
 		_getDataFromUrl
 	done
 
@@ -302,7 +271,6 @@ _getDataFromUrl(){
 		    --backtitle "$BACK_TITLE" \
 		    --inputbox "Esse nome já é utilizado, forneça outro" 7 75 )
 
-	    	#dialog --title "Copie o texto desejado" --msgbox "Ao copiar selecione a opcao para recuperar os dados" 5 70
 	    	continuar=$?
 		done
 	fi
@@ -339,14 +307,13 @@ _getDataFromUrl(){
 			fi 
 		;;
 		1)	# reexibir menu principal
-			#ol_Main "$NAMES_FILE" "$LINKS_FILE" "$VIDEO_SCRIPT"
-			linkorganizer_showMenu #
+			linkorganizer_showMenu
 		;;
 	esac
 }
 
 # recuperar nome do video
-_getTitulo(){
+_getTitle(){
 	# armazenar titulo do video
 	TITULO=""
 
@@ -361,9 +328,6 @@ _getTitulo(){
 				)
 
 				continuar=$?
-				# if [ "$continuar" -eq "0" ]; then
-				# 	_validTitle
-				# fi
 				# enquanto o nome digitado já existir
 				# exibir alerta e pedir o nome novamente
 				if [ -e "$LIST_VIDEOS_FILE" ]; then
@@ -399,16 +363,14 @@ _getTitulo(){
 			if [ -z "$TITULO" ]; then
 				# exibir mensagem
 				utils_showInfoMessage "Dados incompletos" "Insira o título do vídeo!"
-				_getTitulo
+				_getTitle
 			else
 				# enviar nome do video para arquivo de nomes
-				#_sendNameForFile $titulo
 				# recuperar link do video
 				_getLink
 			fi 
 		;;
 		1)	# reexibir menu principal
-			#ol_Main "$NAMES_FILE" "$LINKS_FILE" "$VIDEO_SCRIPT"
 			linkorganizer_showMenu #
 		;;
 		2) echo  HELP ;;
@@ -433,16 +395,10 @@ _getLink(){
 				--inputbox 'Link do youtube:' \
 				0 100 
 			)
-				#adicionar acima para melhorar
-				#--and-widget \
-		       	#--yesno '\nVocê aceita os Termos da Licença?' 8 30
 
 			continuar=$?
 			# enquanto o link digitado já existir
 			# exibir alerta e pedir o link novamente
-			#TODO verificar se é link do you tube
-			#FIXME não está funcionando
-			#FIXME CORRIGIR BUG AO ADICIONAR UM LINK REPETIDO
 			if [ "$continuar" ];then
 				while ! utils_isUTubeLink "$LINK" ; do
 					dialog \
@@ -450,7 +406,7 @@ _getLink(){
 				        --backtitle "$BACK_TITLE" \
 				        --msgbox "Esse não é um link do YouTube" \
 				        5 35
-				        #_getLink
+
 				        LINK=$( dialog  --stdout \
 								--title 'Dados do vídeo' \
 								--backtitle "$BACK_TITLE" \
@@ -466,7 +422,7 @@ _getLink(){
 					        --backtitle "$BACK_TITLE" \
 					        --msgbox "Esse link já é utilizado" \
 					        5 35
-					        #_getLink
+
 							LINK=$( dialog  --stdout \
 									--title 'Dados do vídeo' \
 									--backtitle "$BACK_TITLE" \
@@ -495,23 +451,21 @@ _getLink(){
 				_getLink
 			else
 				# enviar link para arquivo de links
-				#_sendLinkForFile $link
 				# deixar o link com o formato correto para diminuir a chamada de funcoes
 				LINK=$(utils_youtubeRegex "$LINK")
 
-				./"$GET_VIDEO_FORMAT_SCRIPT" "$LINK"
-				format=$(cut -d":" -f1 format)
-				ext=$(cut -d":" -f2 format)
+				videoFormat_Main "$LINK"
+				format=$(cut -d":" -f1 "$FORMAT_FILE")
+				ext=$(cut -d":" -f2 "$FORMAT_FILE")
 
 				TITULO="$TITULO$ext"
 				LINK="$LINK -f$format"
 
 				# exibir mensagem de sucesso no cadastro do video
-				_sucess #"$titulo"
+				_sucess
 			fi
 		;;
 		1)	# reexibir menu principal
-			#ol_Main "$NAMES_FILE" "$LINKS_FILE" "$VIDEO_SCRIPT"
 			linkorganizer_showMenu 
 		;;
 		2) echo  HELP ;;
@@ -520,34 +474,13 @@ _getLink(){
 	esac
 }
 
-# verificar se o nome do vídeo já é existe
-#_nameAlreadyExists(){
-	#echo "$@" > par
-	# o arquivo possui alguns caracteres antes do nome
-	# eles devem ser considerados apenas para comparar
-	#grep -x "[0-9]\{0,\} - @[0-9]\{0,\} $@" "$NAMES_FILE" > /dev/null
-	#solucao mais simples
-#	grep -x "$@" "$LIST_VIDEOS_FILE"
-#}
-
-# verificar se o do vídeo já é utilizado
-#_videoAlreadyExists(){
-#	L=$(utils_youtubeRegex "$@")
-#	grep -x ".*$L" "$LINKS_FILE"
-#}
-
 # funcao principal
 getData_Main(){
-	# importar script com menu principal
-	#source link-organizer-2.0.sh
 
-	# importar funcao do script para limpar url do youtube
-	#source youtubeRegex.sh
-
-	#if [ ! -e "$NAMES_FILE" ]; then
+	if [ ! -e "$NAMES_FILE" ]; then
 		# criar arquivos necessarios para armazenar e gerenciar videos
-	#	_createFiles
-	#fi	
+		_createFiles
+	fi	
 
 	continuar=0
 
@@ -555,10 +488,6 @@ getData_Main(){
 	while [ "$continuar" -eq "0" ]
 	do
 		# recuperar titulo do video
-		_getTitulo
+		_getTitle
 	done
-
-	#ol_Main "$NAMES_FILE" "$LINKS_FILE" "$VIDEO_SCRIPT"
 }
-
-#tail  -1 log | cut -d' ' -f4,5,6,7,10,11,12 | sed 's/\[download\]//g'

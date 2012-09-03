@@ -22,66 +22,64 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.     #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+#exibir opcoes de recolucao do video
+videoFormat_Main(){
+	echo "asd" >> teste
+	youTubeFile=$(tempfile)
+	wget -O "$youTubeFile" -o $(tempfile) "$1"
 
-youTubeFile=$(tempfile)
-wget -O "$youTubeFile" -o $(tempfile) "$1"
+	dialog \
+	        --title "Aguarde" \
+	        --backtitle "$BACK_TITLE" \
+	        --sleep "5" \
+	        --infobox "Coletando informações do vídeo"  \
+	        3 40
 
-dialog \
-        --title "Aguarde" \
-        --backtitle "$BACK_TITLE" \
-        --sleep "5" \
-        --infobox "Coletando informações do vídeo"  \
-        3 40
+	fmtList=("1080" "720" "480" "360" "240")
+	STRING="<meta property=\"og:video:height"
+	fmt=$(grep "$STRING" "$youTubeFile" | sed 's/.*="// ;s/">//')
+	for key in ${!fmtList[*]}; do
+		if [ "$fmt" -lt "${fmtList[$key]}" ]; then
+			unset fmtList[$key]
+		fi
+	done
 
-fmtList=("1080" "720" "480" "360" "240")
-STRING="<meta property=\"og:video:height"
-fmt=$(grep "$STRING" "$youTubeFile" | sed 's/.*="// ;s/">//')
-for key in ${!fmtList[*]}; do
-	#echo "${fmtList[$key]}"
-	if [ "$fmt" -lt "${fmtList[$key]}" ]; then
-		#echo "${fmtList[$key]}"
-		unset fmtList[$key]
-	fi
-done
+	tmpFmtList=$(tempfile)
+	test -e "$tmpFmtList" && rm "$tmpFmtList"
 
-
-#op=("Lista 'Vídeos Selecionados'  on " " Lista 'Vídeos Selecionados'  off" )
-tmpFmtList=$(tempfile)
-test -e "$tmpFmtList" && rm "$tmpFmtList"
-
-for key in ${!fmtList[*]}; do
-	echo "${fmtList[$key]} ${fmtList[$key]}p off" >> "$tmpFmtList"
-done
+	for key in ${!fmtList[*]}; do
+		echo "${fmtList[$key]} ${fmtList[$key]}p off" >> "$tmpFmtList"
+	done
 
 
 
-fmtValue=$(dialog  --stdout \
-	--title 'Selecione' \
-	--radiolist 'Quais vídeos deseja baixar?'  \
-	0 0 0  \
-	$(cat "$tmpFmtList")) 
-#echo "$fmt"
+	fmtValue=$(dialog  --stdout \
+		--title 'Selecione' \
+		--backtitle "$BACK_TITLE" \
+		--radiolist 'Quais vídeos deseja baixar?'  \
+		0 0 0  \
+		$(cat "$tmpFmtList")) 
 
-#TODO criar variavel para armazenar valor do arquivo utilizado
-case "$fmtValue" in
-	"1080")
-		#echo "escolheu 1080 = 37(.mp4)"
-		echo "37:.mp4" >format
-	;;
-	"720")
-		#echo "escolheu 720 = 22(.mp4)"
-		echo "22:.mp4" >format
-	;;
-	"480")
-		#echo "escolheu 480 = 18(.mp4)"
-		echo "18:.mp4" >format
-	;;
-	"360")
-		#echo "escolheu 360 = 34(.flv)"
-		echo "34:.flv" >format
-	;;
-	"240")
-		#echo "escolheu 240 = 5(.flv)"
-		echo "5:.flv" >format 
-	;;
-esac
+	case "$fmtValue" in
+		"1080")
+			#echo "escolheu 1080 = 37(.mp4)"
+			echo "37:.mp4" >"$FORMAT_FILE"
+		;;
+		"720")
+			#echo "escolheu 720 = 22(.mp4)"
+			echo "22:.mp4" >"$FORMAT_FILE"
+		;;
+		"480")
+			#echo "escolheu 480 = 18(.mp4)"
+			echo "18:.mp4" >"$FORMAT_FILE"
+		;;
+		"360")
+			#echo "escolheu 360 = 34(.flv)"
+			echo "34:.flv" >"$FORMAT_FILE"
+		;;
+		"240")
+			#echo "escolheu 240 = 5(.flv)"
+			echo "5:.flv" >"$FORMAT_FILE" 
+		;;
+	esac
+}
