@@ -51,6 +51,7 @@ export GETDATA_STANDARD="standard"
 export SETTINGS="$HOME/.config/linkOrganizer/settings/settings"
 export BACKUP_DIR="$HOME/.linkOrganizer/data/backup"
 export BACKUP_INF_FILE="README"
+export FORMAT_FILE=".format"
 
 # scripts utilizados
 # centralizadosscripts  variaveis para que possam ser utilizados em qualquer  diretorio
@@ -71,11 +72,10 @@ source "$UTILS_SCRIPT"
 source "$DOWNLOAD_PROCESS_SCRIPT"
 source "$GENERATE_SCRIPT_DOWNLOAD_SCRIPT"
 source "$SETTINGS"
+source "$GET_VIDEO_FORMAT_SCRIPT"
 #source "$GENERAE_SCRIPT_DOWNLOAD_SCRIPT"
 
-
 #trap '' SIGHUP SIGINT SIGQUIT SIGTERM SIGSTOP
-
 
 # exibir menu principal
 linkorganizer_showMenu

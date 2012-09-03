@@ -8,29 +8,31 @@
 #	Para a versão 2 pretendo exibir o nome do video sendo baixado
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# LinkOrganizer is a simple software to organize links.						#
-#																			#
-# Copyright (C) 2010  Italo Pessoa<italoneypessoa@gmail.com>				#
-# This file is part of the program LinkOrganizer. 							#
-#																			#
-# LinkOrganizer is a free software: you can redistribute it and/or modify	#
-# it under the terms of the GNU General Public License as published by		#
-# the Free Software Foundation, either version 3 of the License, or 		#
-# (at your option) any later version.										#
-#																			#
-# This program is distributed in the hope that it will be useful,			#
-# but WITHOUT ANY WARRANTY; without even the implied warranty of 			#
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 		 	#
-# GNU General Public License for more details. 								#
-#																			#
-# You should have received a copy of the GNU General Public License 		#
-# along with this program.  If not, see <http://www.gnu.org/licenses/>. 	#
+# LinkOrganizer is a simple software to organize links.                     #
+#                                                                           #
+# Copyright (C) 2010  Italo Pessoa<italoneypessoa@gmail.com>                #
+# This file is part of the program LinkOrganizer.                           #
+#                                                                           #
+# LinkOrganizer is a free software: you can redistribute it and/or modify   #
+# it under the terms of the GNU General Public License as published by      #
+# the Free Software Foundation, either version 3 of the License, or         #
+# (at your option) any later version.                                       #
+#                                                                           #
+# This program is distributed in the hope that it will be useful,           #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of            #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             #
+# GNU General Public License for more details.                              #
+#                                                                           #
+# You should have received a copy of the GNU General Public License         #
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.     #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
-#trap 'teste' SIGINT
+#trap '_downloadCancel' SIGINT
 source utils.sh
-teste(){
+
+# cancelar download
+_downloadCancel(){
 	dialog --stdout \
         --title "Cancelar download atual" \
         --backtitle "$BACK_TITLE" \
@@ -43,6 +45,7 @@ teste(){
 		_downloadMonitor $DOWNLOAD
 	fi
 }
+
 # funcao para remover espacos que atrapalham a regex
 # para recuperar o percentual de download
 _removeSpaces(){
@@ -55,19 +58,13 @@ _removeSpaces(){
 	echo $text
 }
 
-# funcao para verificar se download ainda esta ocorrendo
-#utils_running(){
-	# $1 é o PID do processo
-#	ps $1 | grep $1 >/dev/null;
-#}
-
 _videoIsAlreadyDownloaded(){
 	ls | grep -x "$1" > /dev/null
 }
 
 #exibir progresso do download
 _showProgressGauge(){
-trap 'teste' SIGINT
+trap '_downloadCancel' SIGINT
 	# loop para checar o andamento do download
 	(
 		# enquanto o download estiver sendo executado a verificação será feita
@@ -131,7 +128,6 @@ _downloadMonitor(){
 		else
 			# se tiver sido baixado exibir msg para o usuario e terminar processo
 			# remover arquivos restantes
-			#echo "$ACTUAL_VIDEO" >> atual
 			utils_showInfoMessage "Vídeo não pode ser baixado" "O vídeo \"$ACTUAL_VIDEO\" já foi baixado"
 			kill -9 "$1"
 
