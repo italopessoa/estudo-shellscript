@@ -6,7 +6,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # LinkOrganizer is a simple software to organize links.                     #
 #                                                                           #
-# Copyright (C) 2010  Italo Pessoa<italoneypessoa@gmail.com>                #
+# Copyright (C) 2012  Italo Pessoa<italoneypessoa@gmail.com>                #
 # This file is part of the program LinkOrganizer.                           #
 #                                                                           #
 # LinkOrganizer is a free software: you can redistribute it and/or modify   #
@@ -25,7 +25,6 @@
 
 #exibir opcoes de recolucao do video
 videoFormat_Main(){
-	echo "asd" >> teste
 	youTubeFile=$(tempfile)
 	wget -O "$youTubeFile" -o $(tempfile) "$1"
 

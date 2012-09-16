@@ -7,7 +7,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # LinkOrganizer is a simple software to organize links.                     #
 #                                                                           #
-# Copyright (C) 2010  Italo Pessoa<italoneypessoa@gmail.com>                #
+# Copyright (C) 2012  Italo Pessoa<italoneypessoa@gmail.com>                #
 # This file is part of the program LinkOrganizer.                           #
 #                                                                           #
 # LinkOrganizer is a free software: you can redistribute it and/or modify   #
@@ -192,8 +192,6 @@ linkorganizer_showMenu(){
 				;;
 			"Download" )
 				# executar script para download dos videos
-				#./"$VIDEO_SCRIPT" 2> /dev/null
-				#$LIST_SCRIPT
 				OPCAO=$( dialog --stdout \
 								--title 'Selecione' \
 								--backtitle "$BACK_TITLE" \
@@ -246,6 +244,9 @@ linkorganizer_showMenu(){
 					"Selecionar" )
 						checkVideos_OneVideo
 						export EXECUTE="$ONE_VIDEO_DOWNLOAD"
+						;;
+					*)
+						linkorganizer_showMenu
 						;;
 				esac
 				./"$EXECUTE" 2> /dev/null
