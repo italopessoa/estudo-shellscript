@@ -318,7 +318,10 @@ _getDataFromUrl(){
 _getTitle(){
 	# armazenar titulo do video
 	TITULO=""
-
+	# correcao para a primeira execucao
+	if [ ! "$GET_DATA_METHOD" ]; then
+		GET_DATA_METHOD="GETDATA_STANDARD"
+	fi
 	case "$GET_DATA_METHOD" in
 
 		"$GETDATA_STANDARD" )
