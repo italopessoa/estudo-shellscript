@@ -1,6 +1,6 @@
 Package: linkorganizer
 Priority: optional
-Version: 1.0.1
+Version: 1.0.2
 Section: multimedia
 Architecture: all
 Depends: bash (>= 4.1), youtube-dl (>= 2011.08.04), python (>= 2.6.5), sed (>= 4.2.1), grep (>= 2.5.4), coreutils (>= 7.4)
