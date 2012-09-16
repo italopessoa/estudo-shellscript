@@ -56,7 +56,7 @@ _dataBackup(){
 
 	localDir="$localDir"
 	data_hora_random=$(date +%d-%m-%Y_%H-%M-%S).$RANDOM
-	mkdir "$BACKUP_DIR/$localDir"
+	mkdir -p "$BACKUP_DIR/$localDir"
 	echo "The original path of these files was: $(pwd)" > "$BACKUP_DIR/$localDir/$BACKUP_INF_FILE"
 
 	files=($LIST_VIDEOS_FILE $NAMES_FILE $LINKS_FILE $NAMES_LIST $LINKS_LIST $AVAILABLE_VIDEO $SELECTED_VIDEOS)
