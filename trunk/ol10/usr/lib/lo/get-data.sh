@@ -320,7 +320,7 @@ _getTitle(){
 	TITULO=""
 	# correcao para a primeira execucao
 	if [ ! "$GET_DATA_METHOD" ]; then
-		GET_DATA_METHOD="GETDATA_STANDARD"
+		GET_DATA_METHOD="$GETDATA_STANDARD"
 	fi
 	case "$GET_DATA_METHOD" in
 
