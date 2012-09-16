@@ -8,7 +8,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # LinkOrganizer is a simple software to organize links.                     #
 #                                                                           #
-# Copyright (C) 2010  Italo Pessoa<italoneypessoa@gmail.com>                #
+# Copyright (C) 2012  Italo Pessoa<italoneypessoa@gmail.com>                #
 # This file is part of the program LinkOrganizer.                           #
 #                                                                           #
 # LinkOrganizer is a free software: you can redistribute it and/or modify   #
@@ -134,7 +134,6 @@ utils_changeGetDaMethod(){
 # modificar a opcao de backup
 # 0 sim
 # 1 nao
-#   nao
 utils_changeMakeBackup(){
     # $1 modelo
     line=$(grep -n "MAKE_BACKUP" "$SETTINGS" | cut -d: -f1)

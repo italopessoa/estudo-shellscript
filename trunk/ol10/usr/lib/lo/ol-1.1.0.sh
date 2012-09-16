@@ -15,7 +15,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # LinkOrganizer is a simple software to organize links.                     #
 #                                                                           #
-# Copyright (C) 2010  Italo Pessoa<italoneypessoa@gmail.com>                #
+# Copyright (C) 2012  Italo Pessoa<italoneypessoa@gmail.com>                #
 # This file is part of the program LinkOrganizer.                           #
 #                                                                           #
 # LinkOrganizer is a free software: you can redistribute it and/or modify   #
@@ -117,8 +117,8 @@ _createLinksFile(){
     echo '#script para fazer download dos vídeos' >> "$SCRIPTOUT"
     echo '' >> "$SCRIPTOUT"
 
-    echo "source $DOWNLOAD_PROCESS_SCRIPT" >> "$SCRIPTOUT"
-    echo "source $LINK_ORGANIZER_SCRIPT" >> "$SCRIPTOUT"
+    echo "source \"$DOWNLOAD_PROCESS_SCRIPT\"" >> "$SCRIPTOUT"
+    echo "source \"$LINK_ORGANIZER_SCRIPT\"" >> "$SCRIPTOUT"
     echo "_showProgress(){" >> "$SCRIPTOUT"
     echo "  # monitorar status download" >> "$SCRIPTOUT"
     echo "  downloadProcess_Show \$!" >> "$SCRIPTOUT"

@@ -1,9 +1,10 @@
 #!/usr/bin/python
-# get-clipboard.py
+# /usr/lib/lo/get-clipboard.py
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # LinkOrganizer is a simple software to organize links.                     #
 #                                                                           #
-# Copyright (C) 2010  Italo Pessoa<italoneypessoa@gmail.com>                #
+# Copyright (C) 2012  Italo Pessoa<italoneypessoa@gmail.com>                #
 # This file is part of the program LinkOrganizer.                           #
 #                                                                           #
 # LinkOrganizer is a free software: you can redistribute it and/or modify   #

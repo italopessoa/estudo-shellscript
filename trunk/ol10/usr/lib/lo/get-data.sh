@@ -6,7 +6,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # LinkOrganizer is a simple software to organize links.                     #
 #                                                                           #
-# Copyright (C) 2010  Italo Pessoa<italoneypessoa@gmail.com>                #
+# Copyright (C) 2012  Italo Pessoa<italoneypessoa@gmail.com>                #
 # This file is part of the program LinkOrganizer.                           #
 #                                                                           #
 # LinkOrganizer is a free software: you can redistribute it and/or modify   #
@@ -31,7 +31,7 @@ getData_clearData(){
 		_dataBackup
 	fi
 
-	for fileVar in $NAMES_FILE $LINKS_FILE $LIST_VIDEOS_FILE $AVAILABLE_VIDEO $SELECTED_VIDEOS $NAMES_LIST $LINKS_LIST $DOWNLOAD_STATUS_LOG $ONE_VIDEO_DOWNLOAD; do
+	for fileVar in $NAMES_FILE $LINKS_FILE $LIST_VIDEOS_FILE $AVAILABLE_VIDEO $SELECTED_VIDEOS $NAMES_LIST $LINKS_LIST $DOWNLOAD_STATUS_LOG $ONE_VIDEO_DOWNLOAD $FORMAT_FILE; do
 		if [ -e "$fileVar" ]; then
 			rm "$fileVar"
 		fi
@@ -61,7 +61,9 @@ _dataBackup(){
 
 	files=($LIST_VIDEOS_FILE $NAMES_FILE $LINKS_FILE $NAMES_LIST $LINKS_LIST $AVAILABLE_VIDEO $SELECTED_VIDEOS)
 	for file in ${files[@]} ; do
-		cp "$file" "$BACKUP_DIR/$localDir/$file"
+		if [ -e "$file" ]; then
+			cp "$file" "$BACKUP_DIR/$localDir/$file"
+		fi
 	done
 	
 	atualDir=$(pwd)
@@ -211,7 +213,7 @@ _getClipboardTitle(){
 	5 70
 	continuar=$?
 	if [ $continuar -eq 0 ]; then
-		TITULO=$(python get-clipboard.py)
+		TITULO=$(python /usr/lib/lo/get-clipboard.py)
 		_validClipboardTitle
 	fi
 }
@@ -223,7 +225,7 @@ _getClipboardLink(){
 	--backtitle "$BACK_TITLE" \
 	--msgbox "Ao copiar selecione a opção para recuperar os dados" \
 	5 70
-	LINK=$(python get-clipboard.py)
+	LINK=$(python /usr/lib/lo/get-clipboard.py)
 	_validClipboardLink
 }
 
@@ -237,7 +239,7 @@ _getDataFromUrl(){
 	 	\nAguarde o processamento dos dados." \
 	 6 70
 
-	LINK=$(python get-clipboard.py)
+	LINK=$(python /usr/lib/lo/get-clipboard.py)
 	while ! utils_isUTubeLink "$LINK" ; do
 		dialog \
 	        --title "Atenção" \
@@ -476,11 +478,6 @@ _getLink(){
 
 # funcao principal
 getData_Main(){
-
-	if [ ! -e "$NAMES_FILE" ]; then
-		# criar arquivos necessarios para armazenar e gerenciar videos
-		_createFiles
-	fi	
 
 	continuar=0
 

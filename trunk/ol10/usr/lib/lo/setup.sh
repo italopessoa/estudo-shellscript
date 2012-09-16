@@ -10,7 +10,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # LinkOrganizer is a simple software to organize links.						#
 #																			#
-# Copyright (C) 2010  Italo Pessoa<italoneypessoa@gmail.com>				#
+# Copyright (C) 2012  Italo Pessoa<italoneypessoa@gmail.com>				#
 # This file is part of the program LinkOrganizer. 							#
 #																			#
 # LinkOrganizer is a free software: you can redistribute it and/or modify	#
@@ -29,8 +29,8 @@
 
 
 # export DIALOGRC=~/Documentos/shell-script/estudo-sehllscript/tema-verde.cfg
-export BACK_TITLE="Organizador de Links - 2.0 BETA"
-
+export BACK_TITLE="Organizador de Links"
+VERSION="1.0.0"
 # arquivos utilizados pelo script
 export VIDEOS_DOWNLOADED_LIST_FILE=".downloaded"
 export LIST_VIDEOS_FILE=".videos"
@@ -55,13 +55,15 @@ export FORMAT_FILE=".format"
 
 # scripts utilizados
 # centralizadosscripts  variaveis para que possam ser utilizados em qualquer  diretorio
-export LINK_ORGANIZER_SCRIPT="link-organizer-2.0.sh"
-export CHECK_VIDEOS_SCRIPT="checkVideos.sh"
-export GET_DATA_SCRIPT="get-data.sh"
-export UTILS_SCRIPT="utils.sh"
-export DOWNLOAD_PROCESS_SCRIPT="download_process.sh"
-export GENERATE_SCRIPT_DOWNLOAD_SCRIPT="ol-1.1.0.sh"
-export GET_VIDEO_FORMAT_SCRIPT="get-format.sh"
+export LINK_ORGANIZER_SCRIPT="/usr/lib/lo/link-organizer-2.0.sh"
+export CHECK_VIDEOS_SCRIPT="/usr/lib/lo/checkVideos.sh"
+export GET_DATA_SCRIPT="/usr/lib/lo/get-data.sh"
+export UTILS_SCRIPT="/usr/lib/lo/utils.sh"
+export DOWNLOAD_PROCESS_SCRIPT="/usr/lib/lo/download_process.sh"
+export GENERATE_SCRIPT_DOWNLOAD_SCRIPT="/usr/lib/lo/ol-1.1.0.sh"
+export GET_VIDEO_FORMAT_SCRIPT="/usr/lib/lo/get-format.sh"
+export FISRT_ACESS_FILE="/usr/lib/lo/1A"
+export COPYING="/usr/lib/lo/COPYING"
 
 # scripts que contem funcoes utilizadas em diversos scripts
 # centralizada a importação
@@ -77,5 +79,44 @@ source "$GET_VIDEO_FORMAT_SCRIPT"
 
 #trap '' SIGHUP SIGINT SIGQUIT SIGTERM SIGSTOP
 
-# exibir menu principal
-linkorganizer_showMenu
+if [ "$1" ]; then
+	case "$1" in
+		"-v" )
+			echo $VERSION
+		;;
+		"--version" )
+			echo $VERSION
+		;;
+		*)
+			echo "Opção desconhecida."
+		;;
+	esac
+else
+	#verificar se é o primeiro acesso
+	if [ ! -e "$HOME/.config/linkOrganizer" ]; then
+		dialog --title 'LinkOrganizer' --textbox "$FISRT_ACESS_FILE" 8 68 \
+			--and-widget \
+			--yesno 'Deseja continuar?' 5 23 
+		
+		# exibir a licença
+	  	if [ $? -eq 0 ]; then
+			dialog --title 'LICENÇA do Software' --textbox "$COPYING" 26 76 \
+				--and-widget \
+				--yesno 'Você aceita os Termos da Licença?' 5 38 
+
+				if [ $? -eq 0 ]; then
+					mkdir -p "$HOME/.config/linkOrganizer/settings"
+					echo "export GET_DATA_METHOD=\"$GETDATA_STANDARD\"" > "$HOME/.config/linkOrganizer/settings/settings"
+					echo "export MAKE_BACKUP=\"0\"" >> "$HOME/.config/linkOrganizer/settings/settings"
+					linkorganizer_showMenu
+				else
+					exit 0;
+				fi
+		else
+			exit 0;
+		fi
+	else
+		# exibir menu principal
+		linkorganizer_showMenu
+	fi
+fi
