@@ -140,14 +140,13 @@ _sucess(){
 		0 0
 
 		if [ $? -eq 1 ]; then
+			continuar=1
 			linkorganizer_showMenu
 		fi
 	fi
 }
 
-#TODO verificar se o titulo ja nao foi utilizado
 #TODO um link nao pode ser o titulo do video
-#TODO na parte do link fazer a verificaçao se é realmente um link do youtube válido
 # validar o titulo capturado da area de tranferencia(clipboard)
 _validClipboardTitle(){
 	
@@ -482,7 +481,7 @@ _getLink(){
 # funcao principal
 getData_Main(){
 
-	continuar=0
+	export continuar=0
 
 	# laco para adicionar videos
 	while [ "$continuar" -eq "0" ]
