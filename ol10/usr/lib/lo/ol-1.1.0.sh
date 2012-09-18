@@ -124,7 +124,7 @@ _createLinksFile(){
     echo "  downloadProcess_Show \$!" >> "$SCRIPTOUT"
     echo "  # vericiar se o download foi conluido com interrupcao" >> "$SCRIPTOUT"
     echo "  if [ \"\$?\" != \"0\" ];then" >> "$SCRIPTOUT"
-    echo "      ./setup.sh" >> "$SCRIPTOUT"
+    echo "      /usr/lib/lo/setup.sh" >> "$SCRIPTOUT"
     echo "      killall \$\$" >> "$SCRIPTOUT"
     echo "  fi" >> "$SCRIPTOUT"
     echo "}" >> "$SCRIPTOUT"

@@ -164,6 +164,7 @@ linkorganizer_showMenu(){
 		)
 
 	if [ $? -eq 0 ];then
+		echo "$res" >> fileres
 		case "$res" in
 			"Adicionar" )
 				# adicionar um novo video
@@ -173,10 +174,10 @@ linkorganizer_showMenu(){
 				# exibir videos adicioandos a lista
 				_showVideos "$LIST_VIDEOS_FILE" "Lista de vídeos"
 				;;
-			"Gerar" )
-				#source ol-1.1.0.sh
-				_createGeralLinksFile
-				;;
+			# "Gerar" )
+			# 	#source ol-1.1.0.sh
+			# 	_createGeralLinksFile
+			# 	;;
 			"Selecionar" )
 				# selecionar videos para download
 				checkVideos_Main
@@ -258,19 +259,8 @@ linkorganizer_showMenu(){
 				;;
 
 			"Sair" )
-
-				vet=($PROCESS_KILL)
-				#foreach
-				#for key in ${!vet[*]}; do
-				#	echo ${vet[$key]};
-				#done
-
-				# encerrar programa
-				#export STOP_PROCESSES="1"
-				#p=$(top -b -n1 | grep bash | cut -d' ' -f1)
-				#kill -9 $$
 				clear
-				killall "$VIDEO_SCRIPT"
+				killall "$VIDEO_SCRIPT" "$LIST_SCRIPT"
 				test ! "$1" && killall "$EXECUTE"
 				clear
 				exit 0;
@@ -280,18 +270,8 @@ linkorganizer_showMenu(){
 			;;
 		esac
 	else
-		vet=($PROCESS_KILL)
-		#foreach
-		#for key in ${!vet[*]}; do
-		#	echo ${vet[$key]};
-		#done
-
-		# encerrar programa
-		#export STOP_PROCESSES="1"
-		#p=$(top -b -n1 | grep bash | cut -d' ' -f1)
-		#kill -9 $$
 		clear
-		# killall "$VIDEO_SCRIPT"
+		killall "$VIDEO_SCRIPT" "$LIST_SCRIPT"
 		test ! "$1" && killall "$EXECUTE"
 		clear
 		exit 1;
