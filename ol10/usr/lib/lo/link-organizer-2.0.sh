@@ -120,13 +120,12 @@ linkorganizer_showMenu(){
 	menuItems=(
 		"Adicionar Adicionar\\ novo\\(s\\)\\ vídeo\\(s\\)"
 		"Vídeos Vídeos\\ disponíveis"
-		"Gerar Gerar\\ script\\ para\\ download"
 		"Selecionar Selecionar\\ vídeos\\ para\\ download"
 		"Listar Vídeos\\ selecionados\\ para\\ download"
 		"Limpar Remover\\ todos\\ os\\ dados\\ CUIDADO"
 		"Download Executar\\ download\\ de\\ todos\\ os\\ vídeos"
 		"Configurações Modificar\\ configurações"
-		"Sair Encerrar\\ programa"s
+		"Sair Encerrar\\ programa"
 	)
 
 	if [ ! -e "$NAMES_FILE" ]; then
@@ -141,9 +140,9 @@ linkorganizer_showMenu(){
 	# verificado apenas um arquivo pois todos são criados juntos
 	# unset menuItems[4]
 	else if [ ! -s "$AVAILABLE_VIDEO" ]; then
-			unset menuItems[3]
+			unset menuItems[2]
 			else if [ ! -s "$SELECTED_VIDEOS" ]; then
-				unset menuItems[4]
+				unset menuItems[3]
 			fi
 		fi
 	fi
@@ -151,7 +150,7 @@ linkorganizer_showMenu(){
 	# remover item Download caso nao exista o script
 	if [ ! -e "$VIDEO_SCRIPT" ]; then
 		if [ ! -e "$LIST_SCRIPT" ];then
-			unset menuItems[6]
+			unset menuItems[5]
 		fi
 	fi
 
