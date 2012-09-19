@@ -61,7 +61,7 @@ _configMenu(){
 		--menu "Selecione o item para configurar"  \
 		0 0 0  \
 		"Dados" 'Configurar o modo de obtenção dos dados do vídeo' \
-		"Backup" 'Fazer backup sempre que dados forém apagados'
+		"Backup" 'Fazer backup sempre que dados forem apagados'
 		)
 
 	case "$res" in
@@ -93,7 +93,7 @@ _configMenu(){
 			dialog  \
 				--title "Backup" \
 				--backtitle "$BACK_TITLE" \
-				--yesno "Deseja que o backup dos dados seja feito ao limpar as informaçes atuais?"  \
+				--yesno "Deseja que o backup dos dados seja feito ao limpar as informações atuais?"  \
 				5 76
 			
 			case "$?" in
