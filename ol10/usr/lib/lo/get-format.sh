@@ -56,7 +56,7 @@ videoFormat_Main(){
 	fmtValue=$(dialog  --stdout \
 		--title 'Selecione' \
 		--backtitle "$BACK_TITLE" \
-		--radiolist 'Quais vídeos deseja baixar?'  \
+		--radiolist 'Selecione a qualidade.'  \
 		0 0 0  \
 		$(cat "$tmpFmtList")) 
 
