@@ -1,0 +1,16 @@
+a93704b473a297229b11928e3445653d  usr/bin/lo
+0b10336443d9d0a1a6ab7583b82f6858  usr/lib/lo/1A
+4fe869ee987a340198fb0d54c55c47f1  usr/lib/lo/COPYING
+c9008cdd549a090a350ca985c3cc32e3  usr/lib/lo/checkVideos.sh
+bae979aae8d062658b126257025f24ed  usr/lib/lo/download_process.sh
+b42c053990e915135dde13069af54b09  usr/lib/lo/get-clipboard.py
+f6e10c487f1e92c303e0ff79c226215a  usr/lib/lo/get-data.sh
+552a2995fda04437ea9fb8c7ac4d1d12  usr/lib/lo/get-format.sh
+58e9d9012d7a909c2a6cbb20647a3e82  usr/lib/lo/link-organizer-2.0.sh
+1012321979d38279ae931d1b036d843f  usr/lib/lo/ol-1.1.0.sh
+fddfbfccca5d77d034ef8dfcdc9c72ba  usr/lib/lo/utils.sh
+ffee22a840bf3e223b52eb3e67b91f24  usr/share/doc/linkorganizer/AUTHORS
+251a211167c90131f0a8a494036cd4e3  usr/share/doc/linkorganizer/changelog.Debian.gz
+573edd3d8c70061651655c3731d20283  usr/share/doc/linkorganizer/TODO
+634d92e8435f2c1b37e6b97662363337  usr/share/doc/linkorganizer/copyright
+c0258e3f166a6c26379098177db727ae  usr/share/doc/linkorganizer/README
