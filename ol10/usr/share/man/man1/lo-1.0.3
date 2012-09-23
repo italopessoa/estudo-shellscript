@@ -1,0 +1,67 @@
+.TH LO 1 "September 23 2012" "Version 1.0.3" "LO Manual Pages"
+
+.SH NAME
+lo - a set of shell scripts to help organize youtube links, to make the
+download of them using youtube-dl and a UI.
+
+
+.SH SYNOPSIS
+.B lo
+[\-v] [\-\-version] [\-l] [\-\-license] [--verbose]
+
+.SH DESCRIPTION
+.PP
+LO is the \fILink Organizer\fP. It is used to get the video data.
+.PP
+The data obtained are stores in a script file that runs youtube-dl with
+the correct parameters.
+All the dare stored in the actual directory, occult files.
+.PP
+On the current version you can make a backup of the data of the 
+directory that you are working.
+
+
+.SH OPTIONS
+LO accepts the following options:
+.TP 8
+.B \-v, \-\-version
+Output version information and exit. When combined with the \fB\-\-verbose\fP
+option, version information about libraries/apps used on the development
+of LO is shown too.
+.TP 8
+.B \-\-license
+Output license information and exit.
+
+.SH FILES
+LO's data files are stored in the actual directory that you are with the
+terminal
+
+The configuration is read in from the user's init file,
+\fB$HOME\fP/.config/linkorganizer. The system wide equivalent is in
+/etc/gimprc.
+
+\fB$HOME\fP/.config/linkorganizer/settings - holds settings of the way
+to get the data and the option to make or no the backup of the data.
+
+LO's backup files are stored in $HOME/.linkorganizer/data/backup on the
+model $(pwd)_$(date +%d-%m-%Y_%H-%M-%S).$RANDOM.tar.gz
+
+
+.SH SUGGESTIONS AND BUG REPORTS
+Any bugs found should be reported to my email <italoneypessoa@gmail.com>
+with the subject: [LO BUG] and a "brief summary"
+
+When reporting LO bugs, it is important to include a reliable way to
+reproduce the bug, version number of LO, OS name and version.
+
+.SH COPYRIGHT
+Copyright © 2011 Free Software Foundation, Inc.  License GPLv3: GNU GPL 
+version 3 or later <http://gnu.org/licenses/gpl.html>. This is free 
+software: you are free to change and redistribute it. There is NO 
+WARRANTY, to the extent permitted by law.
+
+.SH OTHER INFO
+LO is a Free Software, then if you want contribute, please contact me.
+
+.SH AUTHORS
+Write by Italo Pessoa <italoneypessoa@gmail.com>

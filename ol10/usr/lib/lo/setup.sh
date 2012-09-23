@@ -30,7 +30,7 @@
 
 # export DIALOGRC=~/Documentos/shell-script/estudo-sehllscript/tema-verde.cfg
 export BACK_TITLE="Organizador de Links"
-VERSION="1.0.0"
+VERSION="1.0.3"
 # arquivos utilizados pelo script
 export VIDEOS_DOWNLOADED_LIST_FILE=".downloaded"
 export LIST_VIDEOS_FILE=".videos"
@@ -81,11 +81,44 @@ source "$GET_VIDEO_FORMAT_SCRIPT"
 
 if [ "$1" ]; then
 	case "$1" in
-		"-v" )
-			echo $VERSION
+		"-v" | "--version" )
+			if [ "$2" ]; then
+				case "$2" in
+					"--verbose" )
+						echo "Link Organizer $VERSION"
+						echo "bash 4.1"
+						echo "youtube-dl 2011.08.04"
+						echo "python 2.6.5"
+						echo "sed 4.2.1"
+						echo "grep 2.5.4"
+						echo "coreutils 7.4"
+						echo ""
+						;;
+				esac
+			else
+				echo $VERSION
+			fi
 		;;
-		"--version" )
-			echo $VERSION
+		"-l" | "--license")
+			echo "
+Copyright (C) 2012  Italo Pessoa
+
+LinkOrganizer is a free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,	
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"
+		;;
+		"--verbose")
+			echo "Esta opção não é utilzada sozinha."
 		;;
 		*)
 			echo "Opção desconhecida."

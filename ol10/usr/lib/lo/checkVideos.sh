@@ -1,4 +1,3 @@
-
 #!/bin/bash
 # checkVideos.sh
 # script para selecionar videos(que ainda não foram baixados) para download
