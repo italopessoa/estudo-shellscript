@@ -25,4 +25,4 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.     #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-/usr/lib/lo/setup.sh
+/usr/lib/lo/setup.sh "$1" "$2"

@@ -1,7 +1,7 @@
-bda1f987de83dbecb42652a0c3a25ced  usr/bin/lo
+d2aaa4f53744365e8fbf73488891c929  usr/bin/lo
 928133f2cf78b5c001081d086e810d73  usr/lib/lo/1A
 4fe869ee987a340198fb0d54c55c47f1  usr/lib/lo/COPYING
-c9008cdd549a090a350ca985c3cc32e3  usr/lib/lo/checkVideos.sh
+d4a5f70144914c4f256047dae33b5260  usr/lib/lo/checkVideos.sh
 bae979aae8d062658b126257025f24ed  usr/lib/lo/download_process.sh
 b42c053990e915135dde13069af54b09  usr/lib/lo/get-clipboard.py
 f6e10c487f1e92c303e0ff79c226215a  usr/lib/lo/get-data.sh
@@ -9,9 +9,10 @@ f6e10c487f1e92c303e0ff79c226215a  usr/lib/lo/get-data.sh
 58e9d9012d7a909c2a6cbb20647a3e82  usr/lib/lo/link-organizer-2.0.sh
 1012321979d38279ae931d1b036d843f  usr/lib/lo/ol-1.1.0.sh
 fddfbfccca5d77d034ef8dfcdc9c72ba  usr/lib/lo/utils.sh
-a93704b473a297229b11928e3445653d  usr/lib/lo/setup.sh
+9efd93b1338f8c96ca6eb11cd52ffaeb  usr/lib/lo/setup.sh
 6f9c4d5d7d42a43fd6798ed83a5c27b0  usr/share/doc/linkorganizer/AUTHORS
 a1a6b61045871e61cf4faab772a84917  usr/share/doc/linkorganizer/changelog.gz
 7d579724d675dd29cadd83b4fba575c9  usr/share/doc/linkorganizer/TODO
 61e6a7ec8e9512ffc6a2cb3dfb4f70d9  usr/share/doc/linkorganizer/copyright
 c0258e3f166a6c26379098177db727ae  usr/share/doc/linkorganizer/README
+168e09571614298e7b7efbfe387d374b  usr/share/man/man1/lo-1.0.1.gz
