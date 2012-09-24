@@ -6,8 +6,8 @@ bae979aae8d062658b126257025f24ed  usr/lib/lo/download_process.sh
 b42c053990e915135dde13069af54b09  usr/lib/lo/get-clipboard.py
 f6e10c487f1e92c303e0ff79c226215a  usr/lib/lo/get-data.sh
 552a2995fda04437ea9fb8c7ac4d1d12  usr/lib/lo/get-format.sh
-58e9d9012d7a909c2a6cbb20647a3e82  usr/lib/lo/link-organizer-2.0.sh
-1012321979d38279ae931d1b036d843f  usr/lib/lo/ol-1.1.0.sh
+00003ace2568738fa14aeb66a8cc51b5  usr/lib/lo/link-organizer-2.0.sh
+afe6ad01f3388b75850a260fbee6df83  usr/lib/lo/ol-1.1.0.sh
 fddfbfccca5d77d034ef8dfcdc9c72ba  usr/lib/lo/utils.sh
 9efd93b1338f8c96ca6eb11cd52ffaeb  usr/lib/lo/setup.sh
 6f9c4d5d7d42a43fd6798ed83a5c27b0  usr/share/doc/linkorganizer/AUTHORS
