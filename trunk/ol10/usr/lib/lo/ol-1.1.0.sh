@@ -122,7 +122,7 @@ _createLinksFile(){
     echo "_showProgress(){" >> "$SCRIPTOUT"
     echo "  # monitorar status download" >> "$SCRIPTOUT"
     echo "  downloadProcess_Show \$!" >> "$SCRIPTOUT"
-    echo "  # vericiar se o download foi conluido com interrupcao" >> "$SCRIPTOUT"
+    echo "  # verificar se o download foi conluido com interrupcao" >> "$SCRIPTOUT"
     echo "  if [ \"\$?\" != \"0\" ];then" >> "$SCRIPTOUT"
     echo "      /usr/lib/lo/setup.sh" >> "$SCRIPTOUT"
     echo "      killall \$\$" >> "$SCRIPTOUT"
