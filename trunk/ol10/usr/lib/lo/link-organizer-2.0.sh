@@ -163,7 +163,6 @@ linkorganizer_showMenu(){
 		)
 
 	if [ $? -eq 0 ];then
-		echo "$res" >> fileres
 		case "$res" in
 			"Adicionar" )
 				# adicionar um novo video
