@@ -54,7 +54,7 @@ _createGeralLinksFile(){
 }
 
 # menu de configurações
-_configMenu(){
+linkorganizer_configMenu(){
 	res=$( dialog --stdout \
 		--title "Configurações" \
 		--backtitle "$BACK_TITLE" \
@@ -252,7 +252,7 @@ linkorganizer_showMenu(){
 				;;
 
 			"Configurações")
-				_configMenu
+				linkorganizer_configMenu
 				linkorganizer_showMenu
 				;;
 
