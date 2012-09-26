@@ -158,7 +158,7 @@ linkorganizer_showMenu(){
 	res=$( eval \ dialog --stdout \
            --title \"Vídeos cadastrados\" \
            --backtitle \"$BACK_TITLE\" \
-           --menu \"Selecione o vídeos para download\"  \
+           --menu \"Selecione a opção desejada\"  \
            0 0 0 ${menuItems[@]} 
 		)
 
