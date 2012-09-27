@@ -1,0 +1,16 @@
+LinkOrganizer Understanding -
+===================
+This is LinkOrganizer, a simple software to organize links. 
+If you understand, things are just as they are. 
+If you don't understand, things are just as they are.
+
+This software is licensed under the LGPL.
+
+LinkOrganizer Requirements -
+==================
+bash (>= 4.1).
+youtube-dl (>= 2011.08.04).
+python (>= 2.6.5).
+sed (>= 4.2.1).
+grep (>= 2.5.4).
+coreutils (>= 7.4).
