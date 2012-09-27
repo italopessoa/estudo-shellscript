@@ -1,0 +1,21 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=1.0.3
+Encoding=UTF-8
+Name=Link Organizer
+GenericName=Organizador de links
+Comment=Organizador links para download
+Exec=lo
+Terminal=true
+Icon=linkorganizer
+Type=Application
+Categories=Network;AudioVideo
+MimeType=text/html;text/xml;application/xhtml_xml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;
+X-GNOME-FullName=Link Organizer
+X-Ayatana-Desktop-Shortcuts=Configurations;
+
+
+[Configurations Shortcut Group]
+Name=Configurações
+Exec=lo --configure
+TargetEnvironment=Unity
