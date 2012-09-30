@@ -13,12 +13,12 @@
 # Italo Pessoa, Fevereiro de 2012 - ol_1.1.0.sh
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# LinkOrganizer is a simple software to organize links.                     #
+# Link Organizer is a simple software to organize links.                    #
 #                                                                           #
 # Copyright (C) 2012  Italo Pessoa<italoneypessoa@gmail.com>                #
-# This file is part of the program LinkOrganizer.                           #
+# This file is part of the program Link Organizer.                          #
 #                                                                           #
-# LinkOrganizer is a free software: you can redistribute it and/or modify   #
+# Link Organizer is a free software: you can redistribute it and/or modify  #
 # it under the terms of the GNU General Public License as published by      #
 # the Free Software Foundation, either version 3 of the License, or         #
 # (at your option) any later version.                                       #

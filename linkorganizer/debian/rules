@@ -6,22 +6,32 @@ override_dh_install:
 	install -d debian/linkorganizer/usr/bin
 	install -d debian/linkorganizer/usr/lib/lo
 	install -d debian/linkorganizer/usr/share/applications
-	install -d debian/linkorganizer/usr/share/icons
 	install -d debian/linkorganizer/usr/share/doc/linkorganizer
-	cp linkorganizer/usr/bin/lo debian/linkorganizer/usr/bin
-	cp linkorganizer/usr/lib/lo/1A debian/linkorganizer/usr/lib/lo
-	cp linkorganizer/usr/lib/lo/checkVideos.sh debian/linkorganizer/usr/lib/lo
-	cp linkorganizer/usr/lib/lo/COPYING debian/linkorganizer/usr/lib/lo
-	cp linkorganizer/usr/lib/lo/download_process.sh debian/linkorganizer/usr/lib/lo
-	cp linkorganizer/usr/lib/lo/get-clipboard.py debian/linkorganizer/usr/lib/lo
-	cp linkorganizer/usr/lib/lo/get-data.sh debian/linkorganizer/usr/lib/lo
-	cp linkorganizer/usr/lib/lo/get-format.sh debian/linkorganizer/usr/lib/lo
-	cp linkorganizer/usr/lib/lo/link-organizer-2.0.sh debian/linkorganizer/usr/lib/lo
-	cp linkorganizer/usr/lib/lo/ol-1.1.0.sh debian/linkorganizer/usr/lib/lo
-	cp linkorganizer/usr/lib/lo/setup.sh debian/linkorganizer/usr/lib/lo
-	cp linkorganizer/usr/lib/lo/utils.sh debian/linkorganizer/usr/lib/lo
-	cp linkorganizer/usr/share/applications/link-organizer.desktop debian/linkorganizer/usr/share/applications
-	cp linkorganizer/usr/share/icons/linkorganizer.png debian/linkorganizer/usr/share/icons
+	install -d debian/linkorganizer/usr/share/icons/hicolor/16x16/apps
+	install -d debian/linkorganizer/usr/share/icons/hicolor/32x32/apps
+	install -d debian/linkorganizer/usr/share/icons/hicolor/64x64/apps
+	install -d debian/linkorganizer/usr/share/icons/hicolor/128x128/apps
+	#install -d debian/linkorganizer/usr/share/icons/hicolor/192x192/apps
+	install -d debian/linkorganizer/usr/share/icons/hicolor/256x256/apps
+	cp usr/bin/lo debian/linkorganizer/usr/bin
+	cp usr/lib/lo/1A debian/linkorganizer/usr/lib/lo
+	cp usr/lib/lo/checkVideos.sh debian/linkorganizer/usr/lib/lo
+	cp usr/lib/lo/COPYING debian/linkorganizer/usr/lib/lo
+	cp usr/lib/lo/download_process.sh debian/linkorganizer/usr/lib/lo
+	cp usr/lib/lo/get-clipboard.py debian/linkorganizer/usr/lib/lo
+	cp usr/lib/lo/get-data.sh debian/linkorganizer/usr/lib/lo
+	cp usr/lib/lo/get-format.sh debian/linkorganizer/usr/lib/lo
+	cp usr/lib/lo/link-organizer-2.0.sh debian/linkorganizer/usr/lib/lo
+	cp usr/lib/lo/ol-1.1.0.sh debian/linkorganizer/usr/lib/lo
+	cp usr/lib/lo/setup.sh debian/linkorganizer/usr/lib/lo
+	cp usr/lib/lo/utils.sh debian/linkorganizer/usr/lib/lo
+	cp usr/share/applications/link-organizer.desktop debian/linkorganizer/usr/share/applications
+	cp usr/share/icons/hicolor/16x16/apps/linkorganizer.png debian/linkorganizer/usr/share/icons/hicolor/16x16/apps
+	cp usr/share/icons/hicolor/32x32/apps/linkorganizer.png debian/linkorganizer/usr/share/icons/hicolor/32x32/apps
+	cp usr/share/icons/hicolor/64x64/apps/linkorganizer.png debian/linkorganizer/usr/share/icons/hicolor/64x64/apps
+	cp usr/share/icons/hicolor/128x128/apps/linkorganizer.png debian/linkorganizer/usr/share/icons/hicolor/128x128/apps
+	#cp usr/share/icons/hicolor/192x192/apps/linkorganizer.png debian/linkorganizer/usr/share/icons/hicolor/192x192/apps
+	cp usr/share/icons/hicolor/256x256/apps/linkorganizer.png debian/linkorganizer/usr/share/icons/hicolor/256x256/apps
 	#gzip -9 -c debian/NEWS > debian/linkorganizer/usr/share/doc/linkorganizer/NEWS.gz
 	gzip -9 -c debian/THANKS > debian/linkorganizer/usr/share/doc/linkorganizer/THANKS.gz
 
