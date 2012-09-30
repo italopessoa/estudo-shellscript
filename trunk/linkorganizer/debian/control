@@ -6,11 +6,16 @@ Version: 1.0.3
 Standards-Version: 1.0.1
 Depends: bash (>= 4.1), youtube-dl (>= 2011.08.04), python (>= 2.6.5), sed (>= 4.2.1), grep (>= 2.5.4), coreutils (>= 7.4)
 Build-Depends: debhelper (>= 7.0.50~)
-Homepage: http://rg3.github.com/youtube-dl/
+Homepage: https://launchpad.net/linkorganizer
 
 Package: linkorganizer
-Installed-Size: 120
+Installed-Size: 386
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Conjunto de scripts para auxiliar 
-	na organização de downloads de vídeos com youtube-dl.
+Description: Set of scripts to build a GUI to youtube-dl.
+ Link Organizer is a set of scripts to build a GUI to ensure to the user
+ a better experience to download youtube's videos through the linux terminal.
+ You just put the required data, and voila, your video will be downloaded to
+ you computer.
+ Try  it.
+
