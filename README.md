@@ -10,3 +10,5 @@ $ sudo apt-get install linkorganizer
 ```
 
 [launchpad.net](https://launchpad.net/~italoneypessoa/+archive/ubuntu/linkorganizer)
+
+[Demo](https://www.youtube.com/watch?v=M6WhxDhq6jM)
